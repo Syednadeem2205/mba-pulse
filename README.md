@@ -2,18 +2,6 @@
 A deploy-ready static site that you can host on **Vercel**, **Netlify**, or **GitHub Pages**.
 - Dynamic content comes from `data.json` (you can later swap to Google Sheets CSV/Notion export).
 
-## Quick Deploy (Vercel GUI)
-1. Create a GitHub repo named `mba-pulse-premium`.
-2. Upload these files: `index.html`, `styles.css`, `script.js`, `data.json`, `vercel.json`.
-3. Go to vercel.com → **New Project** → Import the repo → Deploy.
-
-## Quick Deploy (Vercel CLI)
-```bash
-npm i -g vercel
-vercel login
-vercel --prod /path/to/mba-pulse-premium
-```
-Vercel will output a live URL.
 
 ## Update Articles
 - Edit `data.json` and push (or redeploy); the site fetches it client-side and updates instantly.
