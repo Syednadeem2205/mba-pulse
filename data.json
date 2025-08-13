@@ -1,0 +1,92 @@
+{
+  "items": [
+    {
+      "category": "Featured",
+      "headline": "India’s Capital Markets Open Wider to Foreign Listings",
+      "summary": "SEBI’s latest framework enables companies to list on IFSC exchanges, unlocking deeper institutional demand with regulatory continuity.",
+      "takeaway1": "Strategy: Dual‑path financing hedges valuation cycles.",
+      "takeaway2": "Corporate Finance: Lower WACC via diversified investor base.",
+      "image": "",
+      "readtime": 860,
+      "tag": "Finance"
+    },
+    {
+      "category": "Brief",
+      "headline": "Tech majors race for on‑device AI",
+      "summary": "Chip + model co‑design shrinks latency; expect new pricing tiers and sticky ecosystems.",
+      "takeaway1": "Pricing power concentrates where switching costs rise.",
+      "readtime": 280,
+      "tag": "Technology"
+    },
+    {
+      "category": "Brief",
+      "headline": "Credit growth outpaces deposit growth",
+      "summary": "Banks chase yields; deposit repricing lags. NIMs face pressure as competition intensifies.",
+      "takeaway1": "Watch ALM risk and funding mix discipline.",
+      "readtime": 220,
+      "tag": "Finance"
+    },
+    {
+      "category": "Brief",
+      "headline": "Logistics startups pivot to profitability",
+      "summary": "Dynamic routing and 3PL network sharing lift unit economics; volumes move to contracts.",
+      "takeaway1": "Gross margin lifts when drop density rises.",
+      "readtime": 190,
+      "tag": "Operations"
+    },
+    {
+      "category": "Top",
+      "headline": "Consumer brands test direct‑to‑retailer playbooks",
+      "summary": "Big FMCG pilots bypass wholesale layers to co‑own shopper data with modern trade.",
+      "takeaway1": "Own the data, own the margin.",
+      "readtime": 360,
+      "tag": "Strategy"
+    },
+    {
+      "category": "Top",
+      "headline": "Auto OEMs build captive finance for EV adoption",
+      "summary": "Innovative bundles—battery warranties, subs, buy‑back guarantees—unlock lower TCO.",
+      "takeaway1": "Financing is a product, not a feature.",
+      "readtime": 310,
+      "tag": "Finance"
+    },
+    {
+      "category": "Top",
+      "headline": "Hotels monetize late‑checkout as micro‑subscription",
+      "summary": "Yield management extends beyond rooms to time‑based add‑ons; ancillary revenue grows.",
+      "takeaway1": "Price the customer’s time, not just the room.",
+      "readtime": 270,
+      "tag": "Hospitality"
+    },
+    {
+      "category": "Spotlight",
+      "headline": "Supply Chain Control Towers",
+      "summary": "Near‑shoring reshapes EOQs; multi‑node visibility releases 8–12% working capital.",
+      "takeaway1": "Postponement + decoupling reduce bullwhip.",
+      "readtime": 250,
+      "tag": "Supply Chain"
+    },
+    {
+      "category": "Case",
+      "headline": "Porter’s Five Forces — Regional Food Delivery",
+      "summary": "A Tier‑2 entrant avoids dinner wars by bundling lunchtime grocery combos.",
+      "takeaway1": "Compete on configuration, not just category.",
+      "readtime": 180,
+      "tag": "Strategy"
+    },
+    {
+      "category": "Quote",
+      "headline": "Strategy is the lever that turns constraints into advantages.",
+      "summary": "",
+      "readtime": 0,
+      "tag": ""
+    },
+    {
+      "category": "Stat",
+      "headline": "11.4%",
+      "summary": "YoY operating margin for top‑quartile SaaS after usage‑based pricing (illustrative).",
+      "readtime": 0,
+      "tag": ""
+    }
+  ]
+}
