@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MBA Pulse</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: #f8f9fa;
+      color: #333;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navigation */
+    nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-family: 'Merriweather', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #d81b60;
+    }
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      flex-wrap: wrap;
+    }
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      transition: color 0.3s;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    .nav-links a:hover, .nav-links a.active {
+      color: #d81b60;
+    }
+
+    /* Page container */
+    .page {
+      display: none;
+      margin-top: 80px;
+      flex: 1;
+    }
+    .page.active {
+      display: block;
+    }
+
+    /* Hero section */
+    .hero {
+      position: relative;
+      height: 90vh;
+      background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80') no-repeat center center/cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      color: #fff;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 700px;
+      animation: fadeInSlide 2s ease-out forwards;
+    }
+    .hero h1 {
+      font-family: 'Merriweather', serif;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0;
+      animation: fadeIn 2s ease forwards;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      opacity: 0;
+      animation: fadeIn 3s ease forwards;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* Reading time badge */
+    .reading-time {
+      background: #d81b60;
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 3;
+    }
+
+    /* Article cards */
+    .articles {
+      padding: 3rem 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .article-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      background: #fff;
+      height: 400px;
+    }
+    .article-card:hover { transform: scale(1.02); }
+    .article-card .card-image {
+      width: 100%;
+      height: 200px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+    }
+    .article-card .card-image::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    }
+    .article-card .card-content {
+      padding: 1.5rem;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .article-card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.3rem;
+      font-family: 'Merriweather', serif;
+      line-height: 1.4;
+    }
+    .article-card p {
+      font-size: 0.95rem;
+      margin: 0;
+      color: #666;
+      line-height: 1.5;
+    }
+    .article-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: #888;
+    }
+    .article-date {
+      font-weight: 500;
+    }
+
+    /* Category headers */
+    .category-header {
+      background-size: cover;
+      background-position: center;
+      height: 40vh;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .category-header::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.4);
+    }
+    .category-header h1 {
+      position: relative;
+      z-index: 2;
+      color: white;
+      font-family: 'Merriweather', serif;
+      font-size: 3rem;
+      text-align: center;
+      margin: 0;
+    }
+
+    /* Content sections */
+    .content-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+    .content-section h2 {
+      font-family: 'Merriweather', serif;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #333;
+    }
+
+    /* Daily reads section */
+    .daily-reads {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 3rem;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+    .daily-reads h3 {
+      font-family: 'Merriweather', serif;
+      color: #d81b60;
+      margin-bottom: 1.5rem;
+      font-size: 1.5rem;
+    }
+    .daily-article {
+      border-left: 4px solid #d81b60;
+      padding-left: 1rem;
+      margin-bottom: 1.5rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .daily-article:hover {
+      background: #f8f9fa;
+    }
+    .daily-article h4 {
+      margin: 0 0 0.5rem 0;
+      font-size: 1.1rem;
+      color: #333;
+    }
+    .daily-article p {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* Modal popup */
+    .modal {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 2rem;
+      max-width: 800px;
+      border-radius: 12px;
+      max-height: 90vh;
+      overflow-y: auto;
+      line-height: 1.6;
+      margin: 1rem;
+    }
+    .modal-content h2 {
+      margin-top: 0;
+      font-family: 'Merriweather', serif;
+    }
+    .close-btn {
+      float: right;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #333;
+      background: none;
+      border: none;
+    }
+
+    /* Footer styles */
+    footer {
+      background: #ffe4ec;
+      color: #333;
+      text-align: center;
+      padding: 2rem 1rem;
+      margin-top: auto;
+    }
+    .footer-links {
+      margin-bottom: 1rem;
+    }
+    .footer-links a {
+      color: #333;
+      margin: 0 10px;
+      text-decoration: none;
+      transition: color 0.3s;
+      cursor: pointer;
+    }
+    .footer-links a:hover {
+      color: #d81b60;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .nav-links {
+        gap: 1rem;
+        font-size: 0.8rem;
+      }
+      .hero h1 {
+        font-size: 2rem;
+      }
+      .articles {
+        grid-template-columns: 1fr;
+        padding: 2rem 1rem;
+      }
+      .category-header h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <div class="nav-container">
+      <div class="logo">MBA Pulse</div>
+      <ul class="nav-links">
+        <li><a href="#" onclick="showPage('home')" class="active">Home</a></li>
+        <li><a href="#" onclick="showPage('strategy')">Strategy</a></li>
+        <li><a href="#" onclick="showPage('finance')">Finance</a></li>
+        <li><a href="#" onclick="showPage('leadership')">Leadership</a></li>
+        <li><a href="#" onclick="showPage('marketing')">Marketing</a></li>
+        <li><a href="#" onclick="showPage('operations')">Operations</a></li>
+        <li><a href="#" onclick="showPage('entrepreneurship')">Entrepreneurship</a></li>
+        <li><a href="#" onclick="showPage('contact')">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Home Page -->
+  <div id="home" class="page active">
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Welcome to MBA Pulse</h1>
+        <p>Your daily dose of business insights in bite-sized reads</p>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="daily-reads">
+        <h3>📅 Today's Must-Reads</h3>
+        <div class="daily-article" onclick="openModal('today1')">
+          <h4>Tesla's Supply Chain Revolution • 3 min read</h4>
+          <p>How Elon Musk's vertical integration strategy is reshaping automotive manufacturing</p>
+        </div>
+        <div class="daily-article" onclick="openModal('today2')">
+          <h4>The Rise of Subscription Economy • 5 min read</h4>
+          <p>Why every business is moving to recurring revenue models</p>
+        </div>
+        <div class="daily-article" onclick="openModal('today3')">
+          <h4>AI in Financial Services • 4 min read</h4>
+          <p>How machine learning is transforming banking and investment decisions</p>
+        </div>
+      </div>
+
+      <h2>Featured Categories</h2>
+      <div class="articles">
+        <div class="article-card" onclick="showPage('strategy')">
+          <div class="reading-time">Multiple reads</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Strategic Management</h3>
+            <p>Master competitive strategy, market positioning, and long-term planning with real-world case studies and frameworks.</p>
+            <div class="article-meta">
+              <span class="article-date">Updated Daily</span>
+              <span>15+ Articles</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card" onclick="showPage('finance')">
+          <div class="reading-time">Multiple reads</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Corporate Finance</h3>
+            <p>Deep dive into financial analysis, valuation methods, and investment decisions that drive business success.</p>
+            <div class="article-meta">
+              <span class="article-date">Updated Daily</span>
+              <span>12+ Articles</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card" onclick="showPage('leadership')">
+          <div class="reading-time">Multiple reads</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Leadership & Management</h3>
+            <p>Develop essential leadership skills, team management techniques, and organizational behavior insights.</p>
+            <div class="article-meta">
+              <span class="article-date">Updated Daily</span>
+              <span>18+ Articles</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Strategy Page -->
+  <div id="strategy" class="page">
+    <div class="category-header" style="background-image: url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')">
+      <h1>Strategic Management</h1>
+    </div>
+    <section class="content-section">
+      <div class="daily-reads">
+        <h3>🎯 Today's Strategy Insights</h3>
+        <div class="daily-article" onclick="openModal('strategy1')">
+          <h4>Netflix's Content Strategy Pivot • 4 min read</h4>
+          <p>How the streaming giant shifted from licensing to original content production</p>
+        </div>
+        <div class="daily-article" onclick="openModal('strategy2')">
+          <h4>Blue Ocean Strategy in Practice • 5 min read</h4>
+          <p>Real examples of companies creating uncontested market spaces</p>
+        </div>
+      </div>
+
+      <div class="articles">
+        <div class="article-card" onclick="openModal('strategy3')">
+          <div class="reading-time">3 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Porter's Five Forces in Digital Age</h3>
+            <p>How traditional competitive analysis adapts to platform economies and network effects.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 15, 2024</span>
+              <span>Strategy</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card" onclick="openModal('strategy4')">
+          <div class="reading-time">5 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1553484771-371a605b060b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Strategic Alliances & Partnerships</h3>
+            <p>When to build, buy, or partner - a framework for strategic decision making.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 14, 2024</span>
+              <span>Strategy</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card" onclick="openModal('strategy5')">
+          <div class="reading-time">4 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Digital Transformation Strategy</h3>
+            <p>A step-by-step approach to leading organizational digital transformation.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 13, 2024</span>
+              <span>Strategy</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Finance Page -->
+  <div id="finance" class="page">
+    <div class="category-header" style="background-image: url('https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')">
+      <h1>Corporate Finance</h1>
+    </div>
+    <section class="content-section">
+      <div class="daily-reads">
+        <h3>💰 Today's Finance Focus</h3>
+        <div class="daily-article" onclick="openModal('finance1')">
+          <h4>Understanding WACC in Practice • 3 min read</h4>
+          <p>How companies calculate and use weighted average cost of capital for decisions</p>
+        </div>
+        <div class="daily-article" onclick="openModal('finance2')">
+          <h4>Private Equity vs Venture Capital • 4 min read</h4>
+          <p>Key differences in investment strategies and portfolio management</p>
+        </div>
+      </div>
+
+      <div class="articles">
+        <div class="article-card" onclick="openModal('finance3')">
+          <div class="reading-time">5 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1559526324-4b87b5e36e44?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>DCF Valuation Masterclass</h3>
+            <p>Step-by-step guide to discounted cash flow analysis with real examples.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 15, 2024</span>
+              <span>Finance</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card" onclick="openModal('finance4')">
+          <div class="reading-time">3 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1590283603385-17ffb3a7f29f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Working Capital Management</h3>
+            <p>Optimizing cash conversion cycles and liquidity management strategies.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 14, 2024</span>
+              <span>Finance</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Leadership Page -->
+  <div id="leadership" class="page">
+    <div class="category-header" style="background-image: url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')">
+      <h1>Leadership & Management</h1>
+    </div>
+    <section class="content-section">
+      <div class="daily-reads">
+        <h3>👥 Today's Leadership Lessons</h3>
+        <div class="daily-article" onclick="openModal('leadership1')">
+          <h4>Remote Team Leadership • 4 min read</h4>
+          <p>Best practices for managing distributed teams in the post-pandemic world</p>
+        </div>
+        <div class="daily-article" onclick="openModal('leadership2')">
+          <h4>Emotional Intelligence in Leadership • 3 min read</h4>
+          <p>Why EQ matters more than IQ for executive success</p>
+        </div>
+      </div>
+
+      <div class="articles">
+        <div class="article-card" onclick="openModal('leadership3')">
+          <div class="reading-time">4 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Change Management Framework</h3>
+            <p>Kotter's 8-step process for leading successful organizational change.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 15, 2024</span>
+              <span>Leadership</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="article-card" onclick="openModal('leadership4')">
+          <div class="reading-time">3 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Building High-Performance Teams</h3>
+            <p>The five dysfunctions of a team and how to overcome them.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 14, 2024</span>
+              <span>Leadership</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Marketing Page -->
+  <div id="marketing" class="page">
+    <div class="category-header" style="background-image: url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')">
+      <h1>Marketing & Brand Strategy</h1>
+    </div>
+    <section class="content-section">
+      <div class="daily-reads">
+        <h3>📈 Today's Marketing Insights</h3>
+        <div class="daily-article" onclick="openModal('marketing1')">
+          <h4>Customer Lifetime Value Optimization • 5 min read</h4>
+          <p>How to calculate and improve CLV for sustainable growth</p>
+        </div>
+        <div class="daily-article" onclick="openModal('marketing2')">
+          <h4>Brand Positioning in Crowded Markets • 3 min read</h4>
+          <p>Strategies for differentiation when everyone looks the same</p>
+        </div>
+      </div>
+
+      <div class="articles">
+        <div class="article-card" onclick="openModal('marketing3')">
+          <div class="reading-time">4 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1533750516457-a7f992034fec?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Digital Marketing Attribution</h3>
+            <p>Understanding multi-touch attribution models for better ROI measurement.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 15, 2024</span>
+              <span>Marketing</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Operations Page -->
+  <div id="operations" class="page">
+    <div class="category-header" style="background-image: url('https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')">
+      <h1>Operations & Supply Chain</h1>
+    </div>
+    <section class="content-section">
+      <div class="daily-reads">
+        <h3>⚙️ Today's Operations Focus</h3>
+        <div class="daily-article" onclick="openModal('operations1')">
+          <h4>Lean Six Sigma in Service Industries • 4 min read</h4>
+          <p>Applying manufacturing principles to improve service delivery</p>
+        </div>
+      </div>
+
+      <div class="articles">
+        <div class="article-card" onclick="openModal('operations2')">
+          <div class="reading-time">5 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>Supply Chain Resilience</h3>
+            <p>Building anti-fragile supply chains in an uncertain world.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 15, 2024</span>
+              <span>Operations</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Entrepreneurship Page -->
+  <div id="entrepreneurship" class="page">
+    <div class="category-header" style="background-image: url('https://images.unsplash.com/photo-1553484771-371a605b060b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')">
+      <h1>Entrepreneurship & Innovation</h1>
+    </div>
+    <section class="content-section">
+      <div class="daily-reads">
+        <h3>🚀 Today's Startup Insights</h3>
+        <div class="daily-article" onclick="openModal('entrepreneur1')">
+          <h4>Startup Funding Landscape 2024 • 5 min read</h4>
+          <p>Current trends in venture capital and alternative funding sources</p>
+        </div>
+      </div>
+
+      <div class="articles">
+        <div class="article-card" onclick="openModal('entrepreneur2')">
+          <div class="reading-time">3 min read</div>
+          <div class="card-image" style="background-image: url('https://images.unsplash.com/photo-1559136555-9303baea8ebd?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80')"></div>
+          <div class="card-content">
+            <h3>MVP Development Strategy</h3>
+            <p>How to build and test minimum viable products effectively.</p>
+            <div class="article-meta">
+              <span class="article-date">Dec 15, 2024</span>
+              <span>Entrepreneurship</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Contact Page -->
+  <div id="contact" class="page">
+    <div class="category-header" style="background-image: url('https://images.unsplash.com/photo-1423666639041-f56000c27a9a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')">
+      <h1>Get In Touch</h1>
+    </div>
+    <section class="content-section">
+      <p style="text-align: center; margin-bottom: 3rem;">Have suggestions for topics? Want to contribute? We'd love to hear from you!</p>
+      
+      <form class="contact-form" onsubmit="handleSubmit(event)" style="max-width: 600px; margin: 0 auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Full Name</label>
+          <input type="text" name="name" required style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1rem;">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Email Address</label>
+          <input type="email" name="email" required style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1rem;">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Subject</label>
+          <input type="text" name="subject" required style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1rem;">
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Message</label>
+          <textarea name="message" rows="5" required style="width: 100%; padding: 0.75rem; border: 2px solid #e9ecef; border-radius: 8px; font-size: 1rem;"></textarea>
+        </div>
+        <button type="submit" style="background: linear-gradient(45deg, #667eea, #764ba2); color: white; padding: 1rem 2rem; border: none; border-radius: 8px; font-size: 1rem; cursor: pointer;">Send Message</button>
+      </form>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-links">
+      <a href="#" onclick="showPage('home')">Home</a>
+      <a href="#" onclick="showPage('strategy')">Strategy</a>
+      <a href="#" onclick="showPage('finance')">Finance</a>
+      <a href="#" onclick="showPage('leadership')">Leadership</a>
+      <a href="#" onclick="showPage('contact')">Contact</a>
+    </div>
+    <p>&copy; 2024 MBA Pulse. All rights reserved.</p>
+    <p>Daily insights for tomorrow's business leaders</p>
+  </footer>
+
+  <!-- Sample Modals -->
+  <div id="today1" class="modal" onclick="closeModal('today1')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal('today1')">&times;</button>
+      <h2>Tesla's Supply Chain Revolution</h2>
+      <p><strong>3 min read • Dec 15, 2024</strong></p>
+      <p>Tesla's approach to supply chain management represents a fundamental shift from traditional automotive manufacturing. Unlike legacy automakers who rely heavily on supplier networks, Tesla has embraced vertical integration as a core strategy.</p>
+      <p><strong>Key Takeaways:</strong></p>
+      <ul>
+        <li>Vertical integration reduces dependency on suppliers</li>
+        <li>In-house battery production creates competitive advantage</li>
+        <li>Software-first approach enables rapid iteration</li>
+        <li>Direct-to-consumer sales model eliminates dealer markups</li>
+      </ul>
+      <p>This strategy has allowed Tesla to maintain higher margins and respond more quickly to market changes, though it requires significant capital investment upfront.</p>
+    </div>
+  </div>
+
+  <div id="strategy1" class="modal" onclick="closeModal('strategy1')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal('strategy1')">&times;</button>
+      <h2>Netflix's Content Strategy Pivot</h2>
+      <p><strong>4 min read • Dec 15, 2024</strong></p>
+      <p>Netflix's transformation from DVD rental service to streaming giant to content creator offers valuable lessons in strategic pivoting and market positioning.</p>
+      <p><strong>The Strategic Shift:</strong></p>
+      <ul>
+        <li>From licensing content to creating original programming</li>
+        <li>Global expansion with localized content</li>
+        <li>Data-driven content creation and recommendation algorithms</li>
+        <li>Binge-watching model that changed viewing habits</li>
+      </ul>
+      <p>The company's willingness to cannibalize its own business model and invest heavily in original content has created sustainable competitive advantages in an increasingly crowded streaming market.</p>
+    </div>
+  </div>
+
+  <div id="finance1" class="modal" onclick="closeModal('finance1')">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="close-btn" onclick="closeModal('finance1')">&times;</button>
+      <h2>Understanding WACC in Practice</h2>
+      <p><strong>3 min read • Dec 15, 2024</strong></p>
+      <p>Weighted Average Cost of Capital (WACC) is a crucial metric for corporate finance decisions, representing the average rate a company expects to pay to finance its assets.</p>
+      <p><strong>WACC Formula:</strong><br>
+      WACC = (E/V × Re) + (D/V × Rd × (1-Tc))</p>
+      <p><strong>Practical Applications:</strong></p>
+      <ul>
+        <li>Capital budgeting and project evaluation</li>
+        <li>Company valuation using DCF models</li>
+        <li>Optimal capital structure decisions</li>
+        <li>Performance measurement and benchmarking</li>
+      </ul>
+      <p>Companies with lower WACC have competitive advantages in capital-intensive industries, as they can pursue projects that competitors cannot justify financially.</p>
+    </div>
+  </div>
+
+  <script>
+    // Navigation functionality
+    function showPage(pageId) {
+      // Hide all pages
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(page => page.classList.remove('active'));
+      
+      // Show selected page
+      document.getElementById(pageId).classList.add('active');
+      
+      // Update navigation
+      const navLinks = document.querySelectorAll('.nav-links a');
+      navLinks.forEach(link => link.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Scroll to top
+      window.scrollTo(0, 0);
+    }
+
+    // Modal functionality
+    function openModal(modalId) {
+      document.getElementById(modalId).style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    // Contact form handling
+    function handleSubmit(event) {
+      event.preventDefault();
+      
+      // Get form data
+      const formData = new FormData(event.target);
+      const name = formData.get('name');
+      const email = formData.get('email');
+      
+      // Show success message
+      alert(`Thank you, ${name}! Your message has been received. We'll get back to you at ${email} soon.`);
+      
+      // Reset form
+      event.target.reset(); 
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        event.target.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    }
+
+    // Smooth scrolling
+    document.addEventListener('DOMContentLoaded', function() {
+      document.documentElement.style.scrollBehavior = 'smooth';
+    });
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9744b7d265c9c462',t:'MTc1NjA1ODEwMC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
