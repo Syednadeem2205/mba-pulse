@@ -1,0 +1,2760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBA Pulse - Student Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Roboto', sans-serif;
+            scroll-behavior: smooth;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Merriweather', serif;
+        }
+        
+        body {
+            background: linear-gradient(-45deg, #fce7f3, #fdf2f8, #fef7ff, #f3e8ff, #ede9fe, #f0f9ff);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .glass {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+        
+        .glass-strong {
+            background: rgba(255, 255, 255, 0.99);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .glass-dark {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGradient 3s ease infinite;
+        }
+        
+        @keyframes textGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: heroGradient 4s ease infinite;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        @keyframes heroGradient {
+            0%, 100% { background-position: 0% 50%; }
+            33% { background-position: 50% 0%; }
+            66% { background-position: 100% 50%; }
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite linear;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+        
+        .page {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .page.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hover-lift::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+            border-radius: inherit;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .hover-lift:hover::before {
+            opacity: 1;
+        }
+        
+        .category-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .category-icon svg {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+        
+        .category-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card:hover .category-icon {
+            transform: scale(1.1) rotate(5deg);
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        .slide-in-left {
+            animation: slideInLeft 0.6s ease forwards;
+        }
+        
+        .slide-in-right {
+            animation: slideInRight 0.6s ease forwards;
+        }
+        
+        .slide-in-up {
+            animation: slideInUp 0.6s ease forwards;
+        }
+        
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes slideInUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .stagger-animation > * {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: staggerIn 0.6s ease forwards;
+        }
+        
+        .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+        .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+        .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+        .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+        .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+        .stagger-animation > *:nth-child(6) { animation-delay: 0.6s; }
+        
+        @keyframes staggerIn {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .article-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .article-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .article-card:hover::before {
+            left: 100%;
+        }
+        
+        .article-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
+            border-color: rgba(255,255,255,0.4);
+        }
+        
+        .nav-glass {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .hero-background {
+            position: relative;
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&h=600&fit=crop&crop=center');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 2rem;
+            overflow: hidden;
+        }
+        
+
+        
+
+        
+        .stats-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stats-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 100%;
+            animation: shimmer 2s ease infinite;
+            z-index: 2;
+        }
+        
+        @keyframes shimmer {
+            0%, 100% { background-position: 200% 0; }
+            50% { background-position: -200% 0; }
+        }
+        
+        .typing-animation {
+            overflow: hidden;
+            border-right: 3px solid rgba(102, 126, 234, 0.7);
+            white-space: nowrap;
+            animation: typing 3s steps(40, end), blink-caret 0.75s step-end infinite;
+        }
+        
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+        
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: rgba(102, 126, 234, 0.7); }
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particleFloat 4s ease-in-out infinite;
+        }
+        
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 1; }
+            50% { transform: translateY(-20px) rotate(180deg); opacity: 0.5; }
+        }
+        
+        .glow-effect {
+            position: relative;
+        }
+        
+        .glow-effect::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            border-radius: inherit;
+            z-index: -1;
+            filter: blur(10px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .glow-effect:hover::before {
+            opacity: 0.7;
+        }
+        
+        .morphing-bg {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: morphing 8s ease infinite;
+        }
+        
+        @keyframes morphing {
+            0% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+            50% { border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%; }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Floating Background Elements -->
+    <div class="floating-elements">
+        <div class="floating-element" style="width: 20px; height: 20px; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-element" style="width: 15px; height: 15px; left: 20%; animation-delay: 2s;"></div>
+        <div class="floating-element" style="width: 25px; height: 25px; left: 30%; animation-delay: 4s;"></div>
+        <div class="floating-element" style="width: 18px; height: 18px; left: 40%; animation-delay: 6s;"></div>
+        <div class="floating-element" style="width: 22px; height: 22px; left: 50%; animation-delay: 8s;"></div>
+        <div class="floating-element" style="width: 16px; height: 16px; left: 60%; animation-delay: 10s;"></div>
+        <div class="floating-element" style="width: 24px; height: 24px; left: 70%; animation-delay: 12s;"></div>
+        <div class="floating-element" style="width: 19px; height: 19px; left: 80%; animation-delay: 14s;"></div>
+        <div class="floating-element" style="width: 21px; height: 21px; left: 90%; animation-delay: 16s;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-glass sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <div class="flex items-center space-x-8">
+                <h1 class="text-3xl font-bold gradient-text cursor-pointer pulse-animation" onclick="showPage('home')">
+                    <span class="inline-block">📊</span> MBA Pulse
+                </h1>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#" onclick="showPage('home')" class="text-gray-700 hover:text-pink-600 transition-colors">Home</a>
+                    <div class="relative group">
+                        <button class="text-gray-700 hover:text-pink-600 transition-colors">Categories</button>
+                        <div class="absolute top-full left-0 mt-2 w-48 glass rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                            <div class="p-2">
+                                <a href="#" onclick="showCategoryPage('Strategy')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100 rounded">Strategy</a>
+                                <a href="#" onclick="showCategoryPage('Finance')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100 rounded">Finance</a>
+                                <a href="#" onclick="showCategoryPage('Leadership')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100 rounded">Leadership</a>
+                                <a href="#" onclick="showCategoryPage('Marketing')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100 rounded">Marketing</a>
+                                <a href="#" onclick="showCategoryPage('Operations')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100 rounded">Operations</a>
+                                <a href="#" onclick="showCategoryPage('Entrepreneurship')" class="block px-4 py-2 text-sm text-gray-700 hover:bg-pink-100 rounded">Entrepreneurship</a>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" onclick="showPage('contact')" class="text-gray-700 hover:text-pink-600 transition-colors">Contact</a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="loginBtn" onclick="showPage('login')" class="px-4 py-2 text-pink-600 hover:bg-pink-100 rounded-lg transition-colors">Login</button>
+                <button id="dashboardBtn" onclick="showPage('dashboard')" class="px-4 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors hidden">Dashboard</button>
+                <button id="adminBtn" onclick="showPage('admin')" class="px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors hidden">Admin Panel</button>
+                <button id="logoutBtn" onclick="logout()" class="px-4 py-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors hidden">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast glass rounded-lg p-4 shadow-lg">
+        <div id="toastMessage" class="text-gray-800"></div>
+    </div>
+
+    <!-- Home Page -->
+    <div id="homePage" class="page active">
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <!-- Hero Section -->
+            <div class="hero-background text-center mb-16 p-16 relative overflow-hidden">
+                
+                <div class="relative z-10">
+                    <div class="mb-8">
+                        <div class="inline-block morphing-bg w-24 h-24 mb-6 flex items-center justify-center text-4xl">
+                            📊
+                        </div>
+                    </div>
+                    <h1 class="hero-title mb-6 slide-in-up">Welcome to MBA Pulse</h1>
+                    <div class="typing-animation text-2xl text-white font-bold mb-8 max-w-3xl mx-auto px-6 py-4 drop-shadow-lg">
+                        Your daily dose of business insights, curated for tomorrow's leaders
+                    </div>
+                    <div class="flex justify-center space-x-6 slide-in-up" style="animation-delay: 0.5s;">
+                        <button onclick="showPage('login')" class="glow-effect px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-semibold hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105">
+                            Get Started
+                        </button>
+                        <button onclick="document.getElementById('dailyReads').scrollIntoView({behavior: 'smooth'})" class="px-8 py-4 bg-white bg-opacity-90 text-gray-800 rounded-full font-bold hover:bg-white hover:bg-opacity-100 transition-all border-2 border-white shadow-lg">
+                            Explore Articles
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Must Reads -->
+            <section class="mb-16 slide-in-left">
+                <div class="flex items-center mb-8">
+                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mr-4">
+                        <span class="text-white text-xl">🔥</span>
+                    </div>
+                    <h2 class="text-4xl font-bold text-gray-800">Daily Must Reads</h2>
+                </div>
+                <div id="dailyReads" class="grid md:grid-cols-3 gap-8 stagger-animation">
+                    <!-- Daily articles will be populated here -->
+                </div>
+            </section>
+
+            <!-- Weekly Archive -->
+            <section class="mb-16 slide-in-right">
+                <div class="flex items-center mb-8">
+                    <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mr-4">
+                        <span class="text-white text-xl">📅</span>
+                    </div>
+                    <h2 class="text-4xl font-bold text-gray-800">Weekly Archive</h2>
+                </div>
+                <div id="weeklyArchive" class="glass-strong rounded-2xl p-8 hover-lift">
+                    <!-- Weekly archive will be populated here -->
+                </div>
+            </section>
+
+            <!-- Featured Categories -->
+            <section class="slide-in-up">
+                <div class="flex items-center mb-8">
+                    <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mr-4">
+                        <span class="text-white text-xl">📚</span>
+                    </div>
+                    <h2 class="text-4xl font-bold text-gray-800">Featured Categories</h2>
+                </div>
+                <div class="grid md:grid-cols-3 lg:grid-cols-6 gap-6 stagger-animation">
+                    <div class="category-card glass-strong rounded-2xl overflow-hidden text-center hover-lift cursor-pointer glow-effect" onclick="showCategoryPage('Strategy')">
+                        <div class="relative h-32 bg-gradient-to-br from-blue-500 to-purple-600">
+                            <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=400&h=300&fit=crop&crop=center" alt="Strategy" class="w-full h-full object-cover opacity-80">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute bottom-2 left-2 text-white font-bold text-lg">📊</div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-gray-800 mb-2 text-lg">Strategy</h3>
+                            <p class="text-sm text-gray-600"><span id="strategyCount">0</span> articles</p>
+                        </div>
+                    </div>
+                    <div class="category-card glass-strong rounded-2xl overflow-hidden text-center hover-lift cursor-pointer glow-effect" onclick="showCategoryPage('Finance')">
+                        <div class="relative h-32 bg-gradient-to-br from-green-500 to-blue-600">
+                            <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&h=300&fit=crop&crop=center" alt="Finance" class="w-full h-full object-cover opacity-80">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute bottom-2 left-2 text-white font-bold text-lg">💰</div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-gray-800 mb-2 text-lg">Finance</h3>
+                            <p class="text-sm text-gray-600"><span id="financeCount">0</span> articles</p>
+                        </div>
+                    </div>
+                    <div class="category-card glass-strong rounded-2xl overflow-hidden text-center hover-lift cursor-pointer glow-effect" onclick="showCategoryPage('Leadership')">
+                        <div class="relative h-32 bg-gradient-to-br from-purple-500 to-pink-600">
+                            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=300&fit=crop&crop=center" alt="Leadership" class="w-full h-full object-cover opacity-80">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute bottom-2 left-2 text-white font-bold text-lg">👥</div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-gray-800 mb-2 text-lg">Leadership</h3>
+                            <p class="text-sm text-gray-600"><span id="leadershipCount">0</span> articles</p>
+                        </div>
+                    </div>
+                    <div class="category-card glass-strong rounded-2xl overflow-hidden text-center hover-lift cursor-pointer glow-effect" onclick="showCategoryPage('Marketing')">
+                        <div class="relative h-32 bg-gradient-to-br from-pink-500 to-red-600">
+                            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=300&fit=crop&crop=center" alt="Marketing" class="w-full h-full object-cover opacity-80">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute bottom-2 left-2 text-white font-bold text-lg">📈</div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-gray-800 mb-2 text-lg">Marketing</h3>
+                            <p class="text-sm text-gray-600"><span id="marketingCount">0</span> articles</p>
+                        </div>
+                    </div>
+                    <div class="category-card glass-strong rounded-2xl overflow-hidden text-center hover-lift cursor-pointer glow-effect" onclick="showCategoryPage('Operations')">
+                        <div class="relative h-32 bg-gradient-to-br from-gray-500 to-blue-600">
+                            <img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=300&fit=crop&crop=center" alt="Operations" class="w-full h-full object-cover opacity-80">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute bottom-2 left-2 text-white font-bold text-lg">⚙️</div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-gray-800 mb-2 text-lg">Operations</h3>
+                            <p class="text-sm text-gray-600"><span id="operationsCount">0</span> articles</p>
+                        </div>
+                    </div>
+                    <div class="category-card glass-strong rounded-2xl overflow-hidden text-center hover-lift cursor-pointer glow-effect" onclick="showCategoryPage('Entrepreneurship')">
+                        <div class="relative h-32 bg-gradient-to-br from-orange-500 to-red-600">
+                            <img src="https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&h=300&fit=crop&crop=center" alt="Entrepreneurship" class="w-full h-full object-cover opacity-80">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute bottom-2 left-2 text-white font-bold text-lg">🚀</div>
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-gray-800 mb-2 text-lg">Entrepreneurship</h3>
+                            <p class="text-sm text-gray-600"><span id="entrepreneurshipCount">0</span> articles</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page">
+        <div class="max-w-md mx-auto px-6 py-12">
+            <div class="glass rounded-xl p-8">
+                <h2 class="text-3xl font-bold gradient-text text-center mb-8">Login to MBA Pulse</h2>
+                
+                <!-- Login Type Toggle -->
+                <div class="flex mb-6">
+                    <button id="studentLoginTab" onclick="switchLoginType('student')" class="flex-1 py-2 px-4 bg-pink-500 text-white rounded-l-lg">Student Login</button>
+                    <button id="adminLoginTab" onclick="switchLoginType('admin')" class="flex-1 py-2 px-4 bg-gray-300 text-gray-700 rounded-r-lg">Admin Login</button>
+                </div>
+
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="mb-4">
+                        <label class="block text-gray-800 text-sm font-medium mb-2">Username</label>
+                        <input type="text" id="username" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-800" required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-800 text-sm font-medium mb-2">Password</label>
+                        <input type="password" id="password" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-800" required>
+                    </div>
+                    <div class="mb-4 text-center">
+                        <button type="button" onclick="showForgotPassword()" class="text-pink-600 hover:text-pink-800 text-sm font-medium">
+                            Forgot Username or Password?
+                        </button>
+                    </div>
+                    <div id="loginError" class="text-red-600 text-sm mb-4 hidden font-medium"></div>
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all font-semibold">
+                        Login
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Dashboard -->
+    <div id="dashboardPage" class="page">
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <div class="text-center mb-12">
+                <h1 class="text-5xl font-bold gradient-text mb-4 slide-in-up">Student Dashboard</h1>
+                <p class="text-xl text-white opacity-90">Track your learning journey and progress</p>
+            </div>
+            
+            <!-- Stats Cards -->
+            <div class="grid md:grid-cols-4 gap-8 mb-16 stagger-animation">
+                <div class="stats-card rounded-2xl p-8 text-center hover-lift glow-effect">
+                    <div class="w-16 h-16 bg-gradient-to-r from-pink-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl">📚</span>
+                    </div>
+                    <div class="text-4xl font-bold text-gray-800 mb-2" id="articlesRead">0</div>
+                    <div class="text-gray-600">Articles Read</div>
+                </div>
+                <div class="stats-card rounded-2xl p-8 text-center hover-lift glow-effect">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl">⏱️</span>
+                    </div>
+                    <div class="text-4xl font-bold text-gray-800 mb-2" id="minutesRead">0</div>
+                    <div class="text-gray-600">Minutes Read</div>
+                </div>
+                <div class="stats-card rounded-2xl p-8 text-center hover-lift glow-effect">
+                    <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl">🔥</span>
+                    </div>
+                    <div class="text-4xl font-bold text-gray-800 mb-2" id="dayStreak">0</div>
+                    <div class="text-gray-600">Day Streak</div>
+                </div>
+                <div class="stats-card rounded-2xl p-8 text-center hover-lift glow-effect">
+                    <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white text-2xl">⭐</span>
+                    </div>
+                    <div class="text-2xl font-bold text-gray-800 mb-2" id="favoriteCategory">-</div>
+                    <div class="text-gray-600">Favorite Category</div>
+                </div>
+            </div>
+
+            <!-- Recent Reading History -->
+            <div class="glass-strong rounded-2xl p-8 slide-in-up">
+                <div class="flex items-center mb-8">
+                    <div class="w-12 h-12 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full flex items-center justify-center mr-4">
+                        <span class="text-white text-xl">📖</span>
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-800">Recent Reading History</h2>
+                </div>
+                <div id="readingHistory" class="space-y-4">
+                    <div class="text-gray-600 text-center py-12 text-lg">No reading history yet. Start reading articles to see your progress!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPage" class="page">
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <h1 class="text-4xl font-bold gradient-text mb-8">Admin Panel</h1>
+            
+            <!-- Tab Navigation -->
+            <div class="flex mb-8">
+                <button onclick="switchAdminTab('articles')" id="articlesTab" class="px-6 py-3 bg-pink-500 text-white rounded-l-lg">Articles</button>
+                <button onclick="switchAdminTab('students')" id="studentsTab" class="px-6 py-3 bg-gray-300 text-gray-700">Students</button>
+                <button onclick="switchAdminTab('database')" id="databaseTab" class="px-6 py-3 bg-gray-300 text-gray-700 rounded-r-lg">Database</button>
+            </div>
+
+            <!-- Articles Tab -->
+            <div id="articlesTabContent" class="admin-tab-content">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Add Article Form -->
+                    <div class="glass rounded-xl p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Add New Article</h2>
+                        <form id="addArticleForm" onsubmit="addArticle(event)">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Title</label>
+                                <input type="text" id="articleTitle" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Summary</label>
+                                <textarea id="articleSummary" rows="3" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required></textarea>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Article Image</label>
+                                
+                                <!-- Image Source Selection -->
+                                <div class="flex mb-3 bg-gray-100 rounded-lg p-1">
+                                    <button type="button" id="urlTab" onclick="switchImageSource('url')" class="flex-1 py-2 px-4 bg-pink-500 text-white rounded-md text-sm font-medium transition-colors">URL</button>
+                                    <button type="button" id="uploadTab" onclick="switchImageSource('upload')" class="flex-1 py-2 px-4 text-gray-600 rounded-md text-sm font-medium transition-colors hover:bg-gray-200">Upload File</button>
+                                    <button type="button" id="driveTab" onclick="switchImageSource('drive')" class="flex-1 py-2 px-4 text-gray-600 rounded-md text-sm font-medium transition-colors hover:bg-gray-200">Google Drive</button>
+                                </div>
+
+                                <!-- URL Input -->
+                                <div id="urlInput" class="image-input-section">
+                                    <input type="url" id="articleImageUrl" placeholder="https://example.com/image.jpg" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                    <p class="text-xs text-gray-500 mt-1">Enter a valid image URL (JPG, PNG, WebP)</p>
+                                </div>
+
+                                <!-- File Upload -->
+                                <div id="uploadInput" class="image-input-section hidden">
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-pink-400 transition-colors">
+                                        <input type="file" id="articleImageFile" accept="image/*" class="hidden" onchange="handleFileUpload(event)">
+                                        <div id="uploadArea" onclick="document.getElementById('articleImageFile').click()" class="cursor-pointer">
+                                            <div class="text-4xl mb-2">📁</div>
+                                            <p class="text-gray-600 mb-2">Click to upload an image</p>
+                                            <p class="text-xs text-gray-500">Supports JPG, PNG, WebP (Max 5MB)</p>
+                                        </div>
+                                        <div id="uploadPreview" class="hidden mt-4">
+                                            <img id="previewImage" class="max-w-full h-32 object-cover rounded-lg mx-auto mb-2">
+                                            <p id="fileName" class="text-sm text-gray-600"></p>
+                                            <button type="button" onclick="clearFileUpload()" class="text-red-500 text-sm hover:text-red-700 mt-2">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Google Drive -->
+                                <div id="driveInput" class="image-input-section hidden">
+                                    <div class="space-y-3">
+                                        <input type="text" id="articleImageDrive" placeholder="Paste Google Drive share link here" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                        <button type="button" onclick="convertDriveLink()" class="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors text-sm">
+                                            Convert Drive Link
+                                        </button>
+                                        <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                            <p class="text-xs text-blue-800 mb-2"><strong>How to get Google Drive link:</strong></p>
+                                            <ol class="text-xs text-blue-700 space-y-1 list-decimal list-inside">
+                                                <li>Upload image to Google Drive</li>
+                                                <li>Right-click → Get link</li>
+                                                <li>Set to "Anyone with the link"</li>
+                                                <li>Copy and paste the link here</li>
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Final Image URL (hidden) -->
+                                <input type="hidden" id="articleImage" required>
+                                
+                                <!-- Image Preview -->
+                                <div id="imagePreview" class="hidden mt-4">
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Preview:</label>
+                                    <img id="finalPreview" class="w-full h-48 object-cover rounded-lg border-2 border-gray-200">
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Content (HTML Format)</label>
+                                <textarea id="articleContent" rows="8" placeholder="Use HTML tags like &lt;h3&gt;, &lt;p&gt;, &lt;ul&gt;, &lt;li&gt;, &lt;strong&gt; for formatting..." class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required></textarea>
+                                <p class="text-xs text-gray-500 mt-1">Format like the Jio-BlackRock example with sections: &lt;h3&gt;The Story&lt;/h3&gt;, &lt;h3&gt;Why This Makes Sense&lt;/h3&gt;, etc.</p>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Category</label>
+                                <select id="articleCategory" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                                    <option value="">Select Category</option>
+                                    <option value="Strategy">Strategy</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Leadership">Leadership</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Operations">Operations</option>
+                                    <option value="Entrepreneurship">Entrepreneurship</option>
+                                </select>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Reading Time (minutes)</label>
+                                <input type="number" id="articleTime" min="1" max="60" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all">
+                                Add Article
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Articles List -->
+                    <div class="glass rounded-xl p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Manage Articles</h2>
+                        <div id="articlesList" class="space-y-4 max-h-96 overflow-y-auto">
+                            <!-- Articles will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Students Tab -->
+            <div id="studentsTabContent" class="admin-tab-content hidden">
+                <div class="grid lg:grid-cols-2 gap-8">
+                    <!-- Register Student Form -->
+                    <div class="glass rounded-xl p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Register New Student</h2>
+                        <form id="registerStudentForm" onsubmit="registerStudent(event)">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Full Name</label>
+                                <input type="text" id="studentName" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">USN</label>
+                                <input type="text" id="studentUSN" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Email</label>
+                                <input type="email" id="studentEmail" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Phone</label>
+                                <input type="tel" id="studentPhone" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Batch</label>
+                                <input type="text" id="studentBatch" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                            </div>
+                            <div class="mb-6">
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Specialization</label>
+                                <select id="studentSpecialization" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+                                    <option value="">Select Specialization</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Operations">Operations</option>
+                                    <option value="HR">Human Resources</option>
+                                    <option value="Strategy">Strategy</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all">
+                                Register Student
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Students List -->
+                    <div class="glass rounded-xl p-6">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-6">Manage Students</h2>
+                        <div class="mb-4">
+                            <input type="text" id="studentSearch" placeholder="Search students..." class="w-full px-4 py-2 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500" oninput="searchStudents()">
+                        </div>
+                        <div id="studentsList" class="space-y-4 max-h-96 overflow-y-auto">
+                            <!-- Students will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Database Tab -->
+            <div id="databaseTabContent" class="admin-tab-content hidden">
+                <div class="grid md:grid-cols-3 gap-6 mb-8">
+                    <div class="glass rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold text-blue-600 mb-2" id="totalStudents">0</div>
+                        <div class="text-gray-700">Total Students</div>
+                    </div>
+                    <div class="glass rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold text-green-600 mb-2" id="totalArticles">0</div>
+                        <div class="text-gray-700">Total Articles</div>
+                    </div>
+                    <div class="glass rounded-xl p-6 text-center">
+                        <div class="text-3xl font-bold text-purple-600 mb-2" id="activeUsers">0</div>
+                        <div class="text-gray-700">Active Users</div>
+                    </div>
+                </div>
+
+                <div class="glass rounded-xl p-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Database Management</h2>
+                    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <button onclick="backupDatabase()" class="py-3 px-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                            Backup Database
+                        </button>
+                        <button onclick="importDatabase()" class="py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                            Import Data
+                        </button>
+                        <button onclick="clearDatabase()" class="py-3 px-6 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                            Clear Database
+                        </button>
+                        <button onclick="generateReport()" class="py-3 px-6 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                            Generate Report
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Category Pages -->
+    <div id="categoryPage" class="page">
+        <div class="max-w-7xl mx-auto px-6 py-12">
+            <div id="categoryBanner" class="text-center mb-12 p-8 rounded-xl">
+                <div id="categoryIcon" class="text-6xl mb-4"></div>
+                <h1 id="categoryTitle" class="text-4xl font-bold text-white mb-4"></h1>
+                <p id="categoryDescription" class="text-xl text-white opacity-90"></p>
+            </div>
+
+            <!-- Today's Insights -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Today's Insights</h2>
+                <div id="todayInsights" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Today's articles will be populated here -->
+                </div>
+            </section>
+
+            <!-- Weekly Archive -->
+            <section class="mb-12">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Weekly Archive</h2>
+                <div id="categoryWeeklyArchive" class="space-y-4">
+                    <!-- Weekly archive will be populated here -->
+                </div>
+            </section>
+
+            <!-- All Articles -->
+            <section>
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">All Articles</h2>
+                <div id="categoryAllArticles" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- All articles will be populated here -->
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Contact Page -->
+    <div id="contactPage" class="page">
+        <div class="max-w-4xl mx-auto px-6 py-12">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-bold gradient-text mb-4">Contact Us</h1>
+                <p class="text-xl text-gray-800">Get in touch with the MBA Pulse team</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="glass rounded-xl p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Send us a message</h2>
+                    <form id="contactForm" onsubmit="handleContactForm(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-gray-800 text-sm font-medium mb-2">Name</label>
+                            <input type="text" id="contactName" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-800" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-800 text-sm font-medium mb-2">Email</label>
+                            <input type="email" id="contactEmail" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-800" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-800 text-sm font-medium mb-2">Subject</label>
+                            <select id="contactSubject" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-800" required>
+                                <option value="">Select Subject</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="technical">Technical Support</option>
+                                <option value="content">Content Suggestion</option>
+                                <option value="account">Account Issues</option>
+                                <option value="feedback">Feedback</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-800 text-sm font-medium mb-2">Message</label>
+                            <textarea id="contactMessage" rows="5" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-800" required></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all font-semibold">
+                            Send Message
+                        </button>
+                    </form>
+                    <div id="contactSuccess" class="hidden mt-4 p-4 bg-green-100 border border-green-400 rounded-lg">
+                        <p class="text-green-800 text-sm">✅ <strong>Message Sent!</strong> We'll get back to you within 24 hours.</p>
+                    </div>
+                </div>
+
+                <div class="glass rounded-xl p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Get in Touch</h2>
+                    <div class="space-y-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                                <span class="text-pink-600 text-xl">📧</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Email</h3>
+                                <p class="text-gray-600">contact@mbapulse.edu</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                                <span class="text-pink-600 text-xl">📞</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Phone</h3>
+                                <p class="text-gray-600">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                                <span class="text-pink-600 text-xl">📍</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Address</h3>
+                                <p class="text-gray-600">123 Business School Lane<br>Education City, EC 12345</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-pink-100 rounded-lg flex items-center justify-center">
+                                <span class="text-pink-600 text-xl">🕒</span>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold text-gray-800">Office Hours</h3>
+                                <p class="text-gray-600">Monday - Friday<br>9:00 AM - 5:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Article Modal -->
+    <div id="articleModal" class="modal">
+        <div class="glass rounded-xl p-8 max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <h2 id="modalTitle" class="text-3xl font-bold text-gray-800"></h2>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <div id="modalContent" class="prose max-w-none text-gray-700 leading-relaxed">
+                <!-- Article content will be populated here -->
+            </div>
+            <div class="mt-6 pt-6 border-t border-gray-200">
+                <div class="flex items-center justify-between text-sm text-gray-500">
+                    <span id="modalCategory"></span>
+                    <span id="modalTime"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="glass rounded-xl p-8 max-w-md mx-4">
+            <div class="flex justify-between items-start mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">Forgot Credentials</h2>
+                <button onclick="closeForgotPassword()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            <form id="forgotPasswordForm" onsubmit="handleForgotPassword(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-800 text-sm font-medium mb-2">Enter your Email or USN</label>
+                    <input type="text" id="forgotIdentifier" placeholder="email@example.com or USN" class="w-full px-4 py-3 glass rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 text-gray-800" required>
+                </div>
+                <div id="forgotError" class="text-red-600 text-sm mb-4 hidden font-medium"></div>
+                <div id="forgotSuccess" class="text-green-600 text-sm mb-4 hidden font-medium"></div>
+                <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:from-pink-600 hover:to-purple-600 transition-all font-semibold">
+                    Recover Credentials
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let currentLoginType = 'student';
+        let currentAdminTab = 'articles';
+        let currentImageSource = 'url';
+        let articles = [];
+        let students = [];
+        let userStats = {
+            articlesRead: 0,
+            minutesRead: 0,
+            dayStreak: 0,
+            favoriteCategory: '-',
+            readingHistory: []
+        };
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSampleData();
+            updateUI();
+            updateCategoryCounts();
+            updateDashboardStats();
+            updateAdminStats();
+            populateHomePage();
+            setupUrlPreview();
+        });
+
+        // Sample data
+        function loadSampleData() {
+            articles = [
+                {
+                    id: 1,
+                    title: "Jio and BlackRock's Big Mutual Fund Bet",
+                    summary: "In today's story, we break down why Reliance Jio and BlackRock are joining forces to shake up India's mutual fund market — and why this could be telecom disruption all over again, but for your SIPs.",
+                    image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=800&h=400&fit=crop&crop=center",
+                    content: `<h3>The Story</h3>
+                    <p>India is saving more, earning more, and swiping more smartphones than ever. But here's the odd bit — less than 10% of Indians invest in mutual funds.</p>
+                    
+                    <p>That's despite the "Mutual Funds Sahi Hai" ads, and despite the fact that SIPs have been breaking collection records month after month. The problem? In smaller towns, traditional banks and brokers still rule the roost, and they haven't really cracked how to get the average first-time saver to start investing.</p>
+                    
+                    <p>Now, enter a tag team you wouldn't want to compete with — Jio and BlackRock. One has digital reach into every corner of the country; the other is the world's largest asset manager.</p>
+                    
+                    <p>Their plan? Launch a fully digital, low-cost mutual fund platform.</p>
+                    
+                    <h3>Why This Makes Sense</h3>
+                    <p>Think about what Jio did to telecom in 2016 — cheap plans, easy onboarding, a nationwide digital push. It took less than two years to turn the entire industry upside down.</p>
+                    
+                    <p>Now picture that same playbook in mutual funds:</p>
+                    <ul>
+                        <li><strong>Jio brings the distribution</strong> — hundreds of millions of mobile users, many in Tier 2 and Tier 3 towns.</li>
+                        <li><strong>BlackRock brings the products</strong> — decades of investment expertise and a global portfolio range.</li>
+                        <li><strong>The combo offers ultra-low fees</strong> that could make traditional AMCs look… expensive.</li>
+                    </ul>
+                    
+                    <p>If you're HDFC AMC, SBI Mutual Fund, or ICICI Prudential, this is when you start sweating.</p>
+                    
+                    <h3>The Competition</h3>
+                    <p>Sure, there are other digital-first investing platforms. Zerodha + Smallcase have been pulling in young investors who like the DIY vibe. But they haven't yet cracked mass-market adoption in small towns.</p>
+                    
+                    <p>And while traditional AMCs have the brand trust, they've been slower to innovate. Their distribution is still heavily reliant on offline networks — something that digital-native players can leapfrog.</p>
+                    
+                    <h3>The Bigger Picture</h3>
+                    <p>For investors, this is good news — more access, better user experience, and potentially lower costs.</p>
+                    
+                    <p>For the industry, it's a wake-up call. Platform-led disruption could onboard millions of first-time MF investors in a few short years.</p>
+                    
+                    <p>For Jio-BlackRock, this isn't just about mutual funds. It's about owning the gateway to financial products — once you're on their platform for SIPs, they can cross-sell insurance, loans, and more.</p>
+                    
+                    <h3>The MBA Takeaway</h3>
+                    <p>This is classic distribution-led market capture. Build the pipes first, get millions on board, then scale product offerings.</p>
+                    
+                    <p>The open question? Can traditional AMCs respond fast enough — with alliances, tech upgrades, or an aggressive pricing play — before Jio-BlackRock makes "Sahi Hai" look like an old ad campaign?</p>`,
+                    category: "Finance",
+                    time: 6,
+                    date: new Date().toISOString().split('T')[0],
+                    createdAt: new Date()
+                },
+                {
+                    id: 2,
+                    title: "Strategic Planning in Digital Age",
+                    summary: "How modern businesses adapt their strategic planning processes for digital transformation and competitive advantage.",
+                    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&h=400&fit=crop&crop=center",
+                    content: "In today's rapidly evolving digital landscape, strategic planning has become more crucial than ever. Organizations must adapt their traditional planning processes to accommodate the speed and uncertainty of digital transformation. This article explores key frameworks and methodologies that successful companies use to navigate digital disruption while maintaining strategic focus. We'll examine case studies from leading tech companies like Amazon, Google, and Microsoft, as well as traditional businesses that have successfully pivoted their strategies. The key is to balance long-term vision with short-term agility, creating flexible strategic frameworks that can evolve with changing market conditions. Modern strategic planning involves continuous scenario planning, rapid prototyping of business models, and leveraging data analytics for informed decision-making. Companies that excel in digital strategy often employ cross-functional teams, embrace experimentation, and maintain a customer-centric approach throughout their planning process.",
+                    category: "Strategy",
+                    time: 5,
+                    date: new Date().toISOString().split('T')[0],
+                    createdAt: new Date()
+                },
+                {
+                    id: 3,
+                    title: "Leadership in Remote Teams",
+                    summary: "Effective leadership strategies for managing distributed teams and building strong virtual cultures.",
+                    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=400&fit=crop&crop=center",
+                    content: "The shift to remote work has fundamentally changed how leaders must approach team management and organizational culture. This article provides actionable insights for leaders navigating the challenges of remote team management. We cover communication strategies, trust-building techniques, performance management in virtual environments, and methods for maintaining team cohesion across distances. Drawing from research and real-world examples, we present a comprehensive framework for effective remote leadership that drives results while supporting team member well-being and professional development. Key topics include establishing clear communication protocols, leveraging technology for collaboration, creating virtual team-building experiences, and adapting performance metrics for remote work environments. The article also addresses common challenges such as managing time zones, preventing isolation, and maintaining company culture in a distributed workforce.",
+                    category: "Leadership",
+                    time: 6,
+                    date: new Date().toISOString().split('T')[0],
+                    createdAt: new Date()
+                },
+                {
+                    id: 4,
+                    title: "Digital Marketing Revolution",
+                    summary: "How AI and data analytics are transforming marketing strategies and customer engagement.",
+                    image: "https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?w=800&h=400&fit=crop&crop=center",
+                    content: "The marketing landscape has undergone a dramatic transformation with the advent of artificial intelligence, machine learning, and advanced data analytics. This comprehensive guide explores how modern marketers are leveraging these technologies to create more personalized, effective, and measurable campaigns. We examine the latest trends in digital marketing, including programmatic advertising, predictive analytics, and omnichannel customer experiences. The article covers practical applications of AI in marketing automation, customer segmentation, and content personalization. Learn how leading brands are using data-driven insights to optimize their marketing spend, improve customer lifetime value, and create more engaging brand experiences across all touchpoints.",
+                    category: "Marketing",
+                    time: 8,
+                    date: new Date().toISOString().split('T')[0],
+                    createdAt: new Date()
+                },
+                {
+                    id: 5,
+                    title: "Operational Excellence Framework",
+                    summary: "Building efficient operations through lean methodologies and continuous improvement processes.",
+                    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&h=400&fit=crop&crop=center",
+                    content: "Operational excellence is the foundation of sustainable business success. This article presents a comprehensive framework for achieving operational excellence through lean methodologies, process optimization, and continuous improvement initiatives. We explore how organizations can eliminate waste, reduce variability, and improve quality while maintaining flexibility and responsiveness to market changes. The guide covers key concepts such as value stream mapping, Six Sigma principles, and the Toyota Production System. Real-world case studies demonstrate how companies across various industries have successfully implemented operational excellence programs, resulting in significant cost savings, improved customer satisfaction, and enhanced competitive positioning.",
+                    category: "Operations",
+                    time: 6,
+                    date: new Date().toISOString().split('T')[0],
+                    createdAt: new Date()
+                },
+                {
+                    id: 6,
+                    title: "Startup Funding Strategies",
+                    summary: "Navigate the complex world of startup funding from seed rounds to IPO with expert insights.",
+                    image: "https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=800&h=400&fit=crop&crop=center",
+                    content: "Securing funding is one of the most critical challenges facing entrepreneurs today. This comprehensive guide walks you through the entire funding journey, from initial seed rounds to eventual IPO or acquisition. We cover various funding sources including angel investors, venture capital, crowdfunding, and alternative financing options. The article provides practical advice on preparing pitch decks, conducting due diligence, negotiating term sheets, and managing investor relationships. Learn from successful entrepreneurs who have raised millions in funding and understand the common pitfalls to avoid. We also explore emerging trends in startup funding, including the rise of micro-VCs, corporate venture capital, and the growing importance of ESG considerations in investment decisions.",
+                    category: "Entrepreneurship",
+                    time: 9,
+                    date: new Date().toISOString().split('T')[0],
+                    createdAt: new Date()
+                }
+            ];
+
+            students = [
+                {
+                    id: 1,
+                    name: "John Doe",
+                    usn: "MBA001",
+                    email: "john.doe@example.com",
+                    phone: "+1234567890",
+                    batch: "2024-26",
+                    specialization: "Finance",
+                    username: "JohnMBA001",
+                    password: "Pass123!",
+                    status: "Active",
+                    createdAt: new Date()
+                }
+            ];
+        }
+
+        // Navigation functions
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId + 'Page').classList.add('active');
+            
+            // Update page-specific content
+            if (pageId === 'home') {
+                populateHomePage();
+            } else if (pageId === 'dashboard') {
+                updateDashboardStats();
+            } else if (pageId === 'admin') {
+                updateAdminContent();
+            }
+        }
+
+        function showCategoryPage(category) {
+            showPage('category');
+            populateCategoryPage(category);
+        }
+
+        // Login functions
+        function switchLoginType(type) {
+            currentLoginType = type;
+            const studentTab = document.getElementById('studentLoginTab');
+            const adminTab = document.getElementById('adminLoginTab');
+            
+            if (type === 'student') {
+                studentTab.className = 'flex-1 py-2 px-4 bg-pink-500 text-white rounded-l-lg';
+                adminTab.className = 'flex-1 py-2 px-4 bg-gray-300 text-gray-700 rounded-r-lg';
+            } else {
+                studentTab.className = 'flex-1 py-2 px-4 bg-gray-300 text-gray-700 rounded-l-lg';
+                adminTab.className = 'flex-1 py-2 px-4 bg-pink-500 text-white rounded-r-lg';
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            
+            errorDiv.classList.add('hidden');
+            
+            if (currentLoginType === 'admin') {
+                if (username === 'admin' && password === 'admin123') {
+                    currentUser = { type: 'admin', username: 'admin' };
+                    showToast('Admin login successful!', 'success');
+                    showPage('admin');
+                    updateUI();
+                } else {
+                    errorDiv.textContent = 'Invalid admin credentials';
+                    errorDiv.classList.remove('hidden');
+                }
+            } else {
+                const student = students.find(s => s.username === username && s.password === password);
+                if (student) {
+                    currentUser = { type: 'student', ...student };
+                    showToast('Student login successful!', 'success');
+                    showPage('dashboard');
+                    updateUI();
+                } else {
+                    errorDiv.textContent = 'Invalid student credentials';
+                    errorDiv.classList.remove('hidden');
+                }
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            showToast('Logged out successfully!', 'success');
+            showPage('home');
+            updateUI();
+        }
+
+        function updateUI() {
+            const loginBtn = document.getElementById('loginBtn');
+            const dashboardBtn = document.getElementById('dashboardBtn');
+            const adminBtn = document.getElementById('adminBtn');
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            if (currentUser) {
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                
+                if (currentUser.type === 'admin') {
+                    adminBtn.classList.remove('hidden');
+                    dashboardBtn.classList.add('hidden');
+                } else {
+                    dashboardBtn.classList.remove('hidden');
+                    adminBtn.classList.add('hidden');
+                }
+            } else {
+                loginBtn.classList.remove('hidden');
+                dashboardBtn.classList.add('hidden');
+                adminBtn.classList.add('hidden');
+                logoutBtn.classList.add('hidden');
+            }
+        }
+
+        // Admin functions
+        function switchAdminTab(tab) {
+            currentAdminTab = tab;
+            
+            // Update tab buttons
+            document.querySelectorAll('[id$="Tab"]').forEach(btn => {
+                if (btn.id.includes('articles') || btn.id.includes('students') || btn.id.includes('database')) {
+                    btn.className = 'px-6 py-3 bg-gray-300 text-gray-700';
+                }
+            });
+            
+            if (tab === 'articles') {
+                document.getElementById('articlesTab').className = 'px-6 py-3 bg-pink-500 text-white rounded-l-lg';
+            } else if (tab === 'students') {
+                document.getElementById('studentsTab').className = 'px-6 py-3 bg-pink-500 text-white';
+            } else if (tab === 'database') {
+                document.getElementById('databaseTab').className = 'px-6 py-3 bg-pink-500 text-white rounded-r-lg';
+            }
+            
+            // Show/hide tab content
+            document.querySelectorAll('.admin-tab-content').forEach(content => {
+                content.classList.add('hidden');
+            });
+            document.getElementById(tab + 'TabContent').classList.remove('hidden');
+            
+            // Update content
+            if (tab === 'articles') {
+                populateArticlesList();
+            } else if (tab === 'students') {
+                populateStudentsList();
+            } else if (tab === 'database') {
+                updateAdminStats();
+            }
+        }
+
+        // Image source switching
+        function switchImageSource(source) {
+            currentImageSource = source;
+            
+            // Update tab buttons
+            document.getElementById('urlTab').className = 'flex-1 py-2 px-4 text-gray-600 rounded-md text-sm font-medium transition-colors hover:bg-gray-200';
+            document.getElementById('uploadTab').className = 'flex-1 py-2 px-4 text-gray-600 rounded-md text-sm font-medium transition-colors hover:bg-gray-200';
+            document.getElementById('driveTab').className = 'flex-1 py-2 px-4 text-gray-600 rounded-md text-sm font-medium transition-colors hover:bg-gray-200';
+            
+            document.getElementById(source + 'Tab').className = 'flex-1 py-2 px-4 bg-pink-500 text-white rounded-md text-sm font-medium transition-colors';
+            
+            // Show/hide input sections
+            document.querySelectorAll('.image-input-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(source + 'Input').classList.remove('hidden');
+            
+            // Clear previous values
+            clearImageInputs();
+        }
+
+        function clearImageInputs() {
+            document.getElementById('articleImageUrl').value = '';
+            document.getElementById('articleImageDrive').value = '';
+            document.getElementById('articleImage').value = '';
+            clearFileUpload();
+            hideImagePreview();
+        }
+
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Check file size (5MB limit)
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('File size must be less than 5MB', 'error');
+                return;
+            }
+            
+            // Check file type
+            if (!file.type.startsWith('image/')) {
+                showToast('Please select a valid image file', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64String = e.target.result;
+                
+                // Show upload preview
+                document.getElementById('uploadArea').classList.add('hidden');
+                document.getElementById('uploadPreview').classList.remove('hidden');
+                document.getElementById('previewImage').src = base64String;
+                document.getElementById('fileName').textContent = file.name;
+                
+                // Set the final image value
+                document.getElementById('articleImage').value = base64String;
+                showImagePreview(base64String);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function clearFileUpload() {
+            document.getElementById('articleImageFile').value = '';
+            document.getElementById('uploadArea').classList.remove('hidden');
+            document.getElementById('uploadPreview').classList.add('hidden');
+            document.getElementById('previewImage').src = '';
+            document.getElementById('fileName').textContent = '';
+        }
+
+        function convertDriveLink() {
+            const driveLink = document.getElementById('articleImageDrive').value.trim();
+            if (!driveLink) {
+                showToast('Please enter a Google Drive link', 'error');
+                return;
+            }
+            
+            // Extract file ID from various Google Drive link formats
+            let fileId = null;
+            
+            // Format: https://drive.google.com/file/d/FILE_ID/view?usp=sharing
+            let match = driveLink.match(/\/file\/d\/([a-zA-Z0-9-_]+)/);
+            if (match) {
+                fileId = match[1];
+            }
+            
+            // Format: https://drive.google.com/open?id=FILE_ID
+            if (!fileId) {
+                match = driveLink.match(/[?&]id=([a-zA-Z0-9-_]+)/);
+                if (match) {
+                    fileId = match[1];
+                }
+            }
+            
+            if (!fileId) {
+                showToast('Invalid Google Drive link format', 'error');
+                return;
+            }
+            
+            // Convert to direct image URL
+            const directUrl = `https://drive.google.com/uc?export=view&id=${fileId}`;
+            
+            // Set the final image value
+            document.getElementById('articleImage').value = directUrl;
+            showImagePreview(directUrl);
+            showToast('Google Drive link converted successfully!', 'success');
+        }
+
+        function showImagePreview(imageUrl) {
+            const preview = document.getElementById('imagePreview');
+            const finalPreview = document.getElementById('finalPreview');
+            
+            finalPreview.src = imageUrl;
+            finalPreview.onload = function() {
+                preview.classList.remove('hidden');
+            };
+            finalPreview.onerror = function() {
+                showToast('Failed to load image preview', 'error');
+                hideImagePreview();
+            };
+        }
+
+        function hideImagePreview() {
+            document.getElementById('imagePreview').classList.add('hidden');
+        }
+
+        // Update URL input to show preview
+        function setupUrlPreview() {
+            const urlInput = document.getElementById('articleImageUrl');
+            let timeout;
+            
+            urlInput.addEventListener('input', function() {
+                clearTimeout(timeout);
+                const url = this.value.trim();
+                
+                if (url) {
+                    timeout = setTimeout(() => {
+                        document.getElementById('articleImage').value = url;
+                        showImagePreview(url);
+                    }, 500);
+                } else {
+                    document.getElementById('articleImage').value = '';
+                    hideImagePreview();
+                }
+            });
+        }
+
+        function addArticle(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('articleTitle').value;
+            const summary = document.getElementById('articleSummary').value;
+            const image = document.getElementById('articleImage').value;
+            const content = document.getElementById('articleContent').value;
+            const category = document.getElementById('articleCategory').value;
+            const time = parseInt(document.getElementById('articleTime').value);
+            
+            if (!image) {
+                showToast('Please provide an image for the article', 'error');
+                return;
+            }
+            
+            const newArticle = {
+                id: articles.length + 1,
+                title,
+                summary,
+                image,
+                content,
+                category,
+                time,
+                date: new Date().toISOString().split('T')[0],
+                createdAt: new Date()
+            };
+            
+            articles.push(newArticle);
+            showToast('Article added successfully!', 'success');
+            document.getElementById('addArticleForm').reset();
+            clearImageInputs();
+            switchImageSource('url'); // Reset to URL tab
+            populateArticlesList();
+            updateCategoryCounts();
+            updateAdminStats();
+            populateHomePage();
+        }
+
+        function deleteArticle(id) {
+            if (confirm('Are you sure you want to delete this article?')) {
+                articles = articles.filter(article => article.id !== id);
+                showToast('Article deleted successfully!', 'success');
+                populateArticlesList();
+                updateCategoryCounts();
+                updateAdminStats();
+                populateHomePage();
+            }
+        }
+
+        function registerStudent(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('studentName').value;
+            const usn = document.getElementById('studentUSN').value;
+            const email = document.getElementById('studentEmail').value;
+            const phone = document.getElementById('studentPhone').value;
+            const batch = document.getElementById('studentBatch').value;
+            const specialization = document.getElementById('studentSpecialization').value;
+            
+            // Check for duplicates
+            if (students.find(s => s.email === email)) {
+                showToast('Email already exists!', 'error');
+                return;
+            }
+            
+            if (students.find(s => s.usn === usn)) {
+                showToast('USN already exists!', 'error');
+                return;
+            }
+            
+            // Generate credentials
+            const firstName = name.split(' ')[0];
+            const username = firstName + usn;
+            const password = generatePassword();
+            
+            const newStudent = {
+                id: students.length + 1,
+                name,
+                usn,
+                email,
+                phone,
+                batch,
+                specialization,
+                username,
+                password,
+                status: 'Active',
+                createdAt: new Date()
+            };
+            
+            students.push(newStudent);
+            showToast(`Student registered! Username: ${username}, Password: ${password}`, 'success');
+            document.getElementById('registerStudentForm').reset();
+            populateStudentsList();
+            updateAdminStats();
+        }
+
+        function generatePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$';
+            let password = '';
+            for (let i = 0; i < 8; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return password;
+        }
+
+        function deleteStudent(id) {
+            if (confirm('Are you sure you want to delete this student?')) {
+                students = students.filter(student => student.id !== id);
+                showToast('Student deleted successfully!', 'success');
+                populateStudentsList();
+                updateAdminStats();
+            }
+        }
+
+        function resetStudentPassword(id) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                const newPassword = generatePassword();
+                student.password = newPassword;
+                showToast(`Password reset! New password: ${newPassword}`, 'success');
+            }
+        }
+
+        function searchStudents() {
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+            const filteredStudents = students.filter(student => 
+                student.name.toLowerCase().includes(searchTerm) ||
+                student.usn.toLowerCase().includes(searchTerm) ||
+                student.email.toLowerCase().includes(searchTerm)
+            );
+            populateStudentsList(filteredStudents);
+        }
+
+        // Content population functions
+        function populateHomePage() {
+            populateDailyReads();
+            populateWeeklyArchive();
+        }
+
+        function populateDailyReads() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayArticles = articles.filter(article => article.date === today).slice(0, 3);
+            
+            const container = document.getElementById('dailyReads');
+            container.innerHTML = '';
+            
+            if (todayArticles.length === 0) {
+                container.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-8">No articles published today</div>';
+                return;
+            }
+            
+            todayArticles.forEach(article => {
+                const articleCard = createArticleCard(article);
+                container.appendChild(articleCard);
+            });
+        }
+
+        function populateWeeklyArchive() {
+            const container = document.getElementById('weeklyArchive');
+            const weeklyData = getWeeklyArchiveData();
+            
+            container.innerHTML = '<h3 class="text-xl font-semibold text-gray-800 mb-4">Past 7 Days</h3>';
+            
+            if (weeklyData.length === 0) {
+                container.innerHTML += '<div class="text-gray-500 text-center py-4">No articles in the past week</div>';
+                return;
+            }
+            
+            weeklyData.forEach(day => {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'mb-4 p-4 bg-white bg-opacity-50 rounded-lg';
+                dayDiv.innerHTML = `
+                    <h4 class="font-semibold text-gray-800 mb-2">${formatDate(day.date)}</h4>
+                    <div class="text-sm text-gray-600">${day.articles.length} articles published</div>
+                `;
+                container.appendChild(dayDiv);
+            });
+        }
+
+        function populateCategoryPage(category) {
+            const categoryData = {
+                Strategy: { 
+                    icon: '📊', 
+                    gradient: 'from-blue-500 to-purple-600', 
+                    description: 'Strategic insights for business growth',
+                    image: 'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1200&h=400&fit=crop&crop=center'
+                },
+                Finance: { 
+                    icon: '💰', 
+                    gradient: 'from-green-500 to-blue-600', 
+                    description: 'Financial wisdom for smart decisions',
+                    image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=1200&h=400&fit=crop&crop=center'
+                },
+                Leadership: { 
+                    icon: '👥', 
+                    gradient: 'from-purple-500 to-pink-600', 
+                    description: 'Leadership principles for modern managers',
+                    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=1200&h=400&fit=crop&crop=center'
+                },
+                Marketing: { 
+                    icon: '📈', 
+                    gradient: 'from-pink-500 to-red-600', 
+                    description: 'Marketing strategies that drive results',
+                    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=400&fit=crop&crop=center'
+                },
+                Operations: { 
+                    icon: '⚙️', 
+                    gradient: 'from-gray-500 to-blue-600', 
+                    description: 'Operational excellence and efficiency',
+                    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=1200&h=400&fit=crop&crop=center'
+                },
+                Entrepreneurship: { 
+                    icon: '🚀', 
+                    gradient: 'from-orange-500 to-red-600', 
+                    description: 'Innovation and startup insights',
+                    image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1200&h=400&fit=crop&crop=center'
+                }
+            };
+            
+            const data = categoryData[category];
+            
+            // Update banner with background image
+            const banner = document.getElementById('categoryBanner');
+            banner.className = `text-center mb-12 p-16 rounded-xl relative overflow-hidden`;
+            banner.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('${data.image}')`;
+            banner.style.backgroundSize = 'cover';
+            banner.style.backgroundPosition = 'center';
+            banner.style.backgroundRepeat = 'no-repeat';
+            document.getElementById('categoryIcon').textContent = data.icon;
+            document.getElementById('categoryTitle').textContent = category;
+            document.getElementById('categoryDescription').textContent = data.description;
+            
+            // Populate sections
+            populateTodayInsights(category);
+            populateCategoryWeeklyArchive(category);
+            populateCategoryAllArticles(category);
+        }
+
+        function populateTodayInsights(category) {
+            const today = new Date().toISOString().split('T')[0];
+            const todayArticles = articles.filter(article => 
+                article.category === category && article.date === today
+            );
+            
+            const container = document.getElementById('todayInsights');
+            container.innerHTML = '';
+            
+            if (todayArticles.length === 0) {
+                container.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-8">No articles published today in this category</div>';
+                return;
+            }
+            
+            todayArticles.forEach(article => {
+                const articleCard = createArticleCard(article);
+                container.appendChild(articleCard);
+            });
+        }
+
+        function populateCategoryWeeklyArchive(category) {
+            const weeklyData = getWeeklyArchiveData().filter(day => 
+                day.articles.some(article => article.category === category)
+            );
+            
+            const container = document.getElementById('categoryWeeklyArchive');
+            container.innerHTML = '';
+            
+            if (weeklyData.length === 0) {
+                container.innerHTML = '<div class="text-gray-500 text-center py-4">No articles in the past week for this category</div>';
+                return;
+            }
+            
+            weeklyData.forEach(day => {
+                const categoryArticles = day.articles.filter(article => article.category === category);
+                if (categoryArticles.length > 0) {
+                    const dayDiv = document.createElement('div');
+                    dayDiv.className = 'glass rounded-lg p-4 mb-4';
+                    dayDiv.innerHTML = `
+                        <h4 class="font-semibold text-gray-800 mb-2">${formatDate(day.date)}</h4>
+                        <div class="text-sm text-gray-600">${categoryArticles.length} articles</div>
+                    `;
+                    container.appendChild(dayDiv);
+                }
+            });
+        }
+
+        function populateCategoryAllArticles(category) {
+            const categoryArticles = articles.filter(article => article.category === category);
+            
+            const container = document.getElementById('categoryAllArticles');
+            container.innerHTML = '';
+            
+            if (categoryArticles.length === 0) {
+                container.innerHTML = '<div class="col-span-3 text-center text-gray-500 py-8">No articles in this category</div>';
+                return;
+            }
+            
+            categoryArticles.forEach(article => {
+                const articleCard = createArticleCard(article);
+                container.appendChild(articleCard);
+            });
+        }
+
+        function populateArticlesList() {
+            const container = document.getElementById('articlesList');
+            container.innerHTML = '';
+            
+            if (articles.length === 0) {
+                container.innerHTML = '<div class="text-gray-500 text-center py-4">No articles yet</div>';
+                return;
+            }
+            
+            articles.forEach(article => {
+                const articleDiv = document.createElement('div');
+                articleDiv.className = 'glass rounded-lg p-4 flex justify-between items-start';
+                articleDiv.innerHTML = `
+                    <div class="flex-1">
+                        <h3 class="font-semibold text-gray-800 mb-1">${article.title}</h3>
+                        <p class="text-sm text-gray-600 mb-2">${article.summary}</p>
+                        <div class="flex items-center space-x-4 text-xs text-gray-500">
+                            <span>${article.category}</span>
+                            <span>${article.time} min read</span>
+                            <span>${formatDate(article.date)}</span>
+                        </div>
+                    </div>
+                    <button onclick="deleteArticle(${article.id})" class="ml-4 text-red-500 hover:text-red-700">
+                        🗑️
+                    </button>
+                `;
+                container.appendChild(articleDiv);
+            });
+        }
+
+        function populateStudentsList(studentList = students) {
+            const container = document.getElementById('studentsList');
+            container.innerHTML = '';
+            
+            if (studentList.length === 0) {
+                container.innerHTML = '<div class="text-gray-500 text-center py-4">No students found</div>';
+                return;
+            }
+            
+            studentList.forEach(student => {
+                const studentDiv = document.createElement('div');
+                studentDiv.className = 'glass rounded-lg p-4';
+                studentDiv.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-semibold text-gray-800">${student.name}</h3>
+                        <span class="text-xs px-2 py-1 rounded-full ${student.status === 'Active' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">${student.status}</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mb-3">
+                        <div>USN: ${student.usn}</div>
+                        <div>Email: ${student.email}</div>
+                        <div>Batch: ${student.batch}</div>
+                        <div>Specialization: ${student.specialization}</div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <button onclick="resetStudentPassword(${student.id})" class="text-xs px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">Reset Password</button>
+                        <button onclick="deleteStudent(${student.id})" class="text-xs px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">Delete</button>
+                    </div>
+                `;
+                container.appendChild(studentDiv);
+            });
+        }
+
+        // Utility functions
+        function createArticleCard(article) {
+            const card = document.createElement('div');
+            card.className = 'article-card rounded-2xl p-8 hover-lift cursor-pointer glow-effect';
+            card.onclick = () => openArticleModal(article);
+            
+            // Category colors
+            const categoryColors = {
+                Strategy: 'from-blue-500 to-purple-600',
+                Finance: 'from-green-500 to-blue-600',
+                Leadership: 'from-purple-500 to-pink-600',
+                Marketing: 'from-pink-500 to-red-600',
+                Operations: 'from-gray-500 to-blue-600',
+                Entrepreneurship: 'from-orange-500 to-red-600'
+            };
+            
+            const categoryIcons = {
+                Strategy: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;">
+                    <path d="M3 3V21H21V19H5V3H3Z" fill="currentColor"/>
+                    <path d="M7 14L12 9L16 13L21 8V10.5L16 15.5L12 11.5L9 14.5L7 14Z" fill="currentColor" opacity="0.7"/>
+                </svg>`,
+                Finance: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;">
+                    <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z" fill="currentColor"/>
+                    <path d="M21 9V7L12 2L3 7V9C3 10.1 3.9 11 5 11V17C5 18.1 5.9 19 7 19H17C18.1 19 19 18.1 19 17V11C20.1 11 21 10.1 21 9Z" fill="currentColor" opacity="0.8"/>
+                </svg>`,
+                Leadership: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;">
+                    <circle cx="12" cy="8" r="4" fill="currentColor"/>
+                    <path d="M12 14C8.13 14 5 17.13 5 21H19C19 17.13 15.87 14 12 14Z" fill="currentColor" opacity="0.7"/>
+                </svg>`,
+                Marketing: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;">
+                    <path d="M3 13H5L7 21L11 3L13 13H15L17 9H21" stroke="currentColor" stroke-width="2" fill="none"/>
+                    <circle cx="13" cy="13" r="2" fill="currentColor"/>
+                </svg>`,
+                Operations: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;">
+                    <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    <circle cx="8" cy="8" r="2" fill="currentColor" opacity="0.6"/>
+                    <circle cx="16" cy="8" r="2" fill="currentColor" opacity="0.6"/>
+                    <circle cx="8" cy="16" r="2" fill="currentColor" opacity="0.6"/>
+                    <circle cx="16" cy="16" r="2" fill="currentColor" opacity="0.6"/>
+                </svg>`,
+                Entrepreneurship: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px;">
+                    <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
+                    <path d="M12 16L14 22L16 16L22 14L16 12L14 6L12 12L6 14L12 16Z" fill="currentColor" opacity="0.7"/>
+                </svg>`
+            };
+            
+            card.innerHTML = `
+                ${article.image ? `
+                    <div class="mb-6 -mx-8 -mt-8">
+                        <img src="${article.image}" alt="${article.title}" class="w-full h-48 object-cover rounded-t-2xl" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                        <div class="hidden w-full h-48 bg-gradient-to-r ${categoryColors[article.category] || 'from-gray-500 to-gray-600'} rounded-t-2xl flex items-center justify-center">
+                            <div class="text-white text-6xl">${categoryIcons[article.category] ? categoryIcons[article.category].replace('style="width: 24px; height: 24px;"', 'style="width: 64px; height: 64px;"') : '📄'}</div>
+                        </div>
+                    </div>
+                ` : ''}
+                <div class="flex items-center mb-4">
+                    <div class="w-12 h-12 bg-gradient-to-r ${categoryColors[article.category] || 'from-gray-500 to-gray-600'} rounded-full flex items-center justify-center mr-4 text-white">
+                        ${categoryIcons[article.category] || '<svg viewBox="0 0 24 24" fill="currentColor" style="width: 24px; height: 24px;"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" /></svg>'}
+                    </div>
+                    <span class="px-4 py-2 bg-gradient-to-r ${categoryColors[article.category] || 'from-gray-500 to-gray-600'} text-white rounded-full text-sm font-semibold">${article.category}</span>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 leading-tight">${article.title}</h3>
+                <p class="text-gray-700 mb-6 leading-relaxed">${article.summary}</p>
+                <div class="flex items-center justify-between text-sm text-gray-600">
+                    <div class="flex items-center space-x-4">
+                        <span class="flex items-center">
+                            <span class="mr-1">⏱️</span>
+                            ${article.time} min read
+                        </span>
+                        <span class="flex items-center">
+                            <span class="mr-1">📅</span>
+                            ${formatDate(article.date)}
+                        </span>
+                    </div>
+                </div>
+                ${currentUser && currentUser.type === 'admin' ? `
+                    <button onclick="event.stopPropagation(); deleteArticle(${article.id})" class="mt-4 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-sm transition-colors">
+                        🗑️ Delete Article
+                    </button>
+                ` : ''}
+            `;
+            
+            return card;
+        }
+
+        function openArticleModal(article) {
+            document.getElementById('modalTitle').textContent = article.title;
+            
+            // Add image if available
+            const imageHtml = article.image ? `
+                <div class="mb-6 -mx-8 -mt-2">
+                    <img src="${article.image}" alt="${article.title}" class="w-full h-64 object-cover rounded-lg" onerror="this.style.display='none';">
+                </div>
+            ` : '';
+            
+            document.getElementById('modalContent').innerHTML = imageHtml + article.content;
+            document.getElementById('modalCategory').textContent = article.category;
+            document.getElementById('modalTime').textContent = `${article.time} min read • ${formatDate(article.date)}`;
+            
+            document.getElementById('articleModal').classList.add('show');
+            
+            // Update user stats if logged in as student
+            if (currentUser && currentUser.type === 'student') {
+                updateUserStats(article);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('articleModal').classList.remove('show');
+        }
+
+        function updateUserStats(article) {
+            userStats.articlesRead++;
+            userStats.minutesRead += article.time;
+            
+            // Update reading history
+            const historyEntry = {
+                title: article.title,
+                category: article.category,
+                time: article.time,
+                readAt: new Date()
+            };
+            userStats.readingHistory.unshift(historyEntry);
+            userStats.readingHistory = userStats.readingHistory.slice(0, 5); // Keep only last 5
+            
+            // Update favorite category
+            const categoryCount = {};
+            userStats.readingHistory.forEach(entry => {
+                categoryCount[entry.category] = (categoryCount[entry.category] || 0) + 1;
+            });
+            
+            let maxCount = 0;
+            let favoriteCategory = '-';
+            for (const [category, count] of Object.entries(categoryCount)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    favoriteCategory = category;
+                }
+            }
+            userStats.favoriteCategory = favoriteCategory;
+            
+            // Update day streak (simplified - just increment for demo)
+            userStats.dayStreak++;
+            
+            updateDashboardStats();
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('articlesRead').textContent = userStats.articlesRead;
+            document.getElementById('minutesRead').textContent = userStats.minutesRead;
+            document.getElementById('dayStreak').textContent = userStats.dayStreak;
+            document.getElementById('favoriteCategory').textContent = userStats.favoriteCategory;
+            
+            // Update reading history
+            const historyContainer = document.getElementById('readingHistory');
+            historyContainer.innerHTML = '';
+            
+            if (userStats.readingHistory.length === 0) {
+                historyContainer.innerHTML = '<div class="text-gray-600 text-center py-8">No reading history yet. Start reading articles to see your progress!</div>';
+                return;
+            }
+            
+            userStats.readingHistory.forEach((entry, index) => {
+                const historyDiv = document.createElement('div');
+                historyDiv.className = 'flex justify-between items-center p-6 glass rounded-xl hover-lift';
+                historyDiv.style.animationDelay = `${index * 0.1}s`;
+                
+                const categoryColors = {
+                    Strategy: 'from-blue-500 to-purple-600',
+                    Finance: 'from-green-500 to-blue-600',
+                    Leadership: 'from-purple-500 to-pink-600',
+                    Marketing: 'from-pink-500 to-red-600',
+                    Operations: 'from-gray-500 to-blue-600',
+                    Entrepreneurship: 'from-orange-500 to-red-600'
+                };
+                
+                const categoryIcons = {
+                    Strategy: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+                        <path d="M3 3V21H21V19H5V3H3Z" fill="currentColor"/>
+                        <path d="M7 14L12 9L16 13L21 8V10.5L16 15.5L12 11.5L9 14.5L7 14Z" fill="currentColor" opacity="0.7"/>
+                    </svg>`,
+                    Finance: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z" fill="currentColor"/>
+                        <path d="M21 9V7L12 2L3 7V9C3 10.1 3.9 11 5 11V17C5 18.1 5.9 19 7 19H17C18.1 19 19 18.1 19 17V11C20.1 11 21 10.1 21 9Z" fill="currentColor" opacity="0.8"/>
+                    </svg>`,
+                    Leadership: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+                        <circle cx="12" cy="8" r="4" fill="currentColor"/>
+                        <path d="M12 14C8.13 14 5 17.13 5 21H19C19 17.13 15.87 14 12 14Z" fill="currentColor" opacity="0.7"/>
+                    </svg>`,
+                    Marketing: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+                        <path d="M3 13H5L7 21L11 3L13 13H15L17 9H21" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <circle cx="13" cy="13" r="2" fill="currentColor"/>
+                    </svg>`,
+                    Operations: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+                        <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                        <circle cx="8" cy="8" r="2" fill="currentColor" opacity="0.6"/>
+                        <circle cx="16" cy="8" r="2" fill="currentColor" opacity="0.6"/>
+                        <circle cx="8" cy="16" r="2" fill="currentColor" opacity="0.6"/>
+                        <circle cx="16" cy="16" r="2" fill="currentColor" opacity="0.6"/>
+                    </svg>`,
+                    Entrepreneurship: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 20px; height: 20px;">
+                        <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z" fill="currentColor"/>
+                        <path d="M12 16L14 22L16 16L22 14L16 12L14 6L12 12L6 14L12 16Z" fill="currentColor" opacity="0.7"/>
+                    </svg>`
+                };
+                
+                historyDiv.innerHTML = `
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gradient-to-r ${categoryColors[entry.category] || 'from-gray-500 to-gray-600'} rounded-full flex items-center justify-center mr-4 text-white">
+                            ${categoryIcons[entry.category] || '<svg viewBox="0 0 24 24" fill="currentColor" style="width: 20px; height: 20px;"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" /></svg>'}
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-800 text-lg">${entry.title}</h4>
+                            <p class="text-gray-600 text-sm">${entry.category} • ${entry.time} min read</p>
+                        </div>
+                    </div>
+                    <div class="text-sm text-gray-600 text-right">
+                        <div class="font-semibold">${formatDateTime(entry.readAt)}</div>
+                        <div class="text-xs opacity-75">Completed</div>
+                    </div>
+                `;
+                historyContainer.appendChild(historyDiv);
+            });
+        }
+
+        function updateCategoryCounts() {
+            const counts = {};
+            articles.forEach(article => {
+                counts[article.category] = (counts[article.category] || 0) + 1;
+            });
+            
+            Object.keys(counts).forEach(category => {
+                const element = document.getElementById(category.toLowerCase() + 'Count');
+                if (element) {
+                    element.textContent = counts[category] || 0;
+                }
+            });
+        }
+
+        function updateAdminStats() {
+            document.getElementById('totalStudents').textContent = students.length;
+            document.getElementById('totalArticles').textContent = articles.length;
+            document.getElementById('activeUsers').textContent = students.filter(s => s.status === 'Active').length;
+        }
+
+        function updateAdminContent() {
+            switchAdminTab(currentAdminTab);
+        }
+
+        function getWeeklyArchiveData() {
+            const weeklyData = [];
+            const today = new Date();
+            
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateString = date.toISOString().split('T')[0];
+                
+                const dayArticles = articles.filter(article => article.date === dateString);
+                
+                if (dayArticles.length > 0) {
+                    weeklyData.push({
+                        date: dateString,
+                        articles: dayArticles
+                    });
+                }
+            }
+            
+            return weeklyData;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+
+        function formatDateTime(date) {
+            return date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.className = `toast glass rounded-lg p-4 shadow-lg ${type === 'success' ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}`;
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Database management functions
+        function backupDatabase() {
+            const data = {
+                articles,
+                students,
+                timestamp: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `mbapulse_backup_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showToast('Database backup downloaded!', 'success');
+        }
+
+        function importDatabase() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            if (data.articles && data.students) {
+                                articles = data.articles;
+                                students = data.students;
+                                showToast('Database imported successfully!', 'success');
+                                updateAdminContent();
+                                updateCategoryCounts();
+                                populateHomePage();
+                            } else {
+                                showToast('Invalid backup file format!', 'error');
+                            }
+                        } catch (error) {
+                            showToast('Error reading backup file!', 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function clearDatabase() {
+            if (confirm('Are you sure you want to clear all data? This action cannot be undone!')) {
+                articles = [];
+                students = [];
+                userStats = {
+                    articlesRead: 0,
+                    minutesRead: 0,
+                    dayStreak: 0,
+                    favoriteCategory: '-',
+                    readingHistory: []
+                };
+                showToast('Database cleared successfully!', 'success');
+                updateAdminContent();
+                updateCategoryCounts();
+                populateHomePage();
+            }
+        }
+
+        function generateReport() {
+            const report = {
+                generatedAt: new Date().toISOString(),
+                summary: {
+                    totalArticles: articles.length,
+                    totalStudents: students.length,
+                    activeStudents: students.filter(s => s.status === 'Active').length,
+                    categoryCounts: {}
+                },
+                articles: articles.map(a => ({
+                    title: a.title,
+                    category: a.category,
+                    date: a.date,
+                    readingTime: a.time
+                })),
+                students: students.map(s => ({
+                    name: s.name,
+                    usn: s.usn,
+                    batch: s.batch,
+                    specialization: s.specialization,
+                    status: s.status
+                }))
+            };
+            
+            // Calculate category counts
+            articles.forEach(article => {
+                report.summary.categoryCounts[article.category] = 
+                    (report.summary.categoryCounts[article.category] || 0) + 1;
+            });
+            
+            const reportStr = JSON.stringify(report, null, 2);
+            const reportBlob = new Blob([reportStr], {type: 'application/json'});
+            const url = URL.createObjectURL(reportBlob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `mbapulse_report_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showToast('Report generated and downloaded!', 'success');
+        }
+
+        // Auto-expire articles after 7 days
+        function cleanupExpiredArticles() {
+            const sevenDaysAgo = new Date();
+            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+            
+            const initialCount = articles.length;
+            articles = articles.filter(article => {
+                const articleDate = new Date(article.date);
+                return articleDate >= sevenDaysAgo;
+            });
+            
+            const removedCount = initialCount - articles.length;
+            if (removedCount > 0) {
+                console.log(`Removed ${removedCount} expired articles`);
+                updateCategoryCounts();
+                updateAdminStats();
+            }
+        }
+
+        // Run cleanup every hour
+        setInterval(cleanupExpiredArticles, 3600000);
+
+        // Contact form handler
+        function handleContactForm(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('contactName').value;
+            const email = document.getElementById('contactEmail').value;
+            const subject = document.getElementById('contactSubject').value;
+            const message = document.getElementById('contactMessage').value;
+            
+            // Simulate sending message
+            setTimeout(() => {
+                document.getElementById('contactForm').reset();
+                document.getElementById('contactSuccess').classList.remove('hidden');
+                showToast('Message sent successfully! We\'ll get back to you soon.', 'success');
+                
+                // Hide success message after 5 seconds
+                setTimeout(() => {
+                    document.getElementById('contactSuccess').classList.add('hidden');
+                }, 5000);
+            }, 1000);
+        }
+
+        // Forgot password functions
+        function showForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.add('show');
+        }
+
+        function closeForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.remove('show');
+            document.getElementById('forgotPasswordForm').reset();
+            document.getElementById('forgotError').classList.add('hidden');
+            document.getElementById('forgotSuccess').classList.add('hidden');
+        }
+
+        function handleForgotPassword(event) {
+            event.preventDefault();
+            
+            const identifier = document.getElementById('forgotIdentifier').value.trim();
+            const errorDiv = document.getElementById('forgotError');
+            const successDiv = document.getElementById('forgotSuccess');
+            
+            errorDiv.classList.add('hidden');
+            successDiv.classList.add('hidden');
+            
+            // Find student by email or USN
+            const student = students.find(s => 
+                s.email.toLowerCase() === identifier.toLowerCase() || 
+                s.usn.toLowerCase() === identifier.toLowerCase()
+            );
+            
+            if (student) {
+                successDiv.innerHTML = `
+                    <strong>Credentials Found!</strong><br>
+                    Username: <strong>${student.username}</strong><br>
+                    Password: <strong>${student.password}</strong><br>
+                    <small>Please save these credentials securely.</small>
+                `;
+                successDiv.classList.remove('hidden');
+                showToast('Credentials recovered successfully!', 'success');
+            } else {
+                errorDiv.textContent = 'No student found with this email or USN. Please contact admin.';
+                errorDiv.classList.remove('hidden');
+            }
+        }
+
+        // Enhanced admin functions with better error handling
+        function addArticle(event) {
+            event.preventDefault();
+            
+            const title = document.getElementById('articleTitle').value.trim();
+            const summary = document.getElementById('articleSummary').value.trim();
+            const image = document.getElementById('articleImage').value.trim();
+            const content = document.getElementById('articleContent').value.trim();
+            const category = document.getElementById('articleCategory').value;
+            const time = parseInt(document.getElementById('articleTime').value);
+            
+            // Validation
+            if (!title || !summary || !content || !category || !time) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+            
+            if (!image) {
+                showToast('Please provide an image for the article', 'error');
+                return;
+            }
+            
+            if (time < 1 || time > 60) {
+                showToast('Reading time must be between 1 and 60 minutes', 'error');
+                return;
+            }
+            
+            const newArticle = {
+                id: Date.now(), // Use timestamp for unique ID
+                title,
+                summary,
+                image,
+                content,
+                category,
+                time,
+                date: new Date().toISOString().split('T')[0],
+                createdAt: new Date()
+            };
+            
+            articles.unshift(newArticle); // Add to beginning
+            showToast('Article added successfully!', 'success');
+            document.getElementById('addArticleForm').reset();
+            clearImageInputs();
+            switchImageSource('url');
+            populateArticlesList();
+            updateCategoryCounts();
+            updateAdminStats();
+            populateHomePage();
+        }
+
+        function registerStudent(event) {
+            event.preventDefault();
+            
+            const name = document.getElementById('studentName').value.trim();
+            const usn = document.getElementById('studentUSN').value.trim().toUpperCase();
+            const email = document.getElementById('studentEmail').value.trim().toLowerCase();
+            const phone = document.getElementById('studentPhone').value.trim();
+            const batch = document.getElementById('studentBatch').value.trim();
+            const specialization = document.getElementById('studentSpecialization').value;
+            
+            // Validation
+            if (!name || !usn || !email || !phone || !batch || !specialization) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showToast('Please enter a valid email address', 'error');
+                return;
+            }
+            
+            // Phone validation
+            const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+            if (!phoneRegex.test(phone.replace(/[\s\-\(\)]/g, ''))) {
+                showToast('Please enter a valid phone number', 'error');
+                return;
+            }
+            
+            // Check for duplicates
+            if (students.find(s => s.email === email)) {
+                showToast('Email already exists!', 'error');
+                return;
+            }
+            
+            if (students.find(s => s.usn === usn)) {
+                showToast('USN already exists!', 'error');
+                return;
+            }
+            
+            // Generate credentials
+            const firstName = name.split(' ')[0];
+            const username = firstName + usn;
+            const password = generateSecurePassword();
+            
+            const newStudent = {
+                id: Date.now(),
+                name,
+                usn,
+                email,
+                phone,
+                batch,
+                specialization,
+                username,
+                password,
+                status: 'Active',
+                createdAt: new Date()
+            };
+            
+            students.push(newStudent);
+            showToast(`Student registered successfully! Username: ${username}, Password: ${password}`, 'success');
+            document.getElementById('registerStudentForm').reset();
+            populateStudentsList();
+            updateAdminStats();
+        }
+
+        function generateSecurePassword() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            let password = '';
+            
+            // Ensure at least one of each type
+            password += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'[Math.floor(Math.random() * 26)]; // Uppercase
+            password += 'abcdefghijklmnopqrstuvwxyz'[Math.floor(Math.random() * 26)]; // Lowercase
+            password += '0123456789'[Math.floor(Math.random() * 10)]; // Number
+            password += '!@#$%^&*'[Math.floor(Math.random() * 8)]; // Special
+            
+            // Fill remaining length
+            for (let i = 4; i < 10; i++) {
+                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            
+            // Shuffle the password
+            return password.split('').sort(() => Math.random() - 0.5).join('');
+        }
+
+        // Enhanced database functions
+        function backupDatabase() {
+            try {
+                const data = {
+                    articles: articles.map(a => ({...a, createdAt: a.createdAt.toISOString()})),
+                    students: students.map(s => ({...s, createdAt: s.createdAt.toISOString()})),
+                    version: '1.0',
+                    timestamp: new Date().toISOString(),
+                    totalArticles: articles.length,
+                    totalStudents: students.length
+                };
+                
+                const dataStr = JSON.stringify(data, null, 2);
+                const dataBlob = new Blob([dataStr], {type: 'application/json'});
+                const url = URL.createObjectURL(dataBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `mbapulse_backup_${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                showToast('Database backup downloaded successfully!', 'success');
+            } catch (error) {
+                showToast('Error creating backup: ' + error.message, 'error');
+            }
+        }
+
+        function importDatabase() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            const data = JSON.parse(e.target.result);
+                            
+                            if (!data.articles || !data.students) {
+                                throw new Error('Invalid backup file format');
+                            }
+                            
+                            // Convert date strings back to Date objects
+                            articles = data.articles.map(a => ({
+                                ...a,
+                                createdAt: new Date(a.createdAt)
+                            }));
+                            
+                            students = data.students.map(s => ({
+                                ...s,
+                                createdAt: new Date(s.createdAt)
+                            }));
+                            
+                            showToast(`Database imported successfully! ${articles.length} articles, ${students.length} students`, 'success');
+                            updateAdminContent();
+                            updateCategoryCounts();
+                            populateHomePage();
+                            updateDashboardStats();
+                        } catch (error) {
+                            showToast('Error importing backup: ' + error.message, 'error');
+                        }
+                    };
+                    reader.readAsText(file);
+                }
+            };
+            input.click();
+        }
+
+        function clearDatabase() {
+            if (confirm('⚠️ WARNING: This will permanently delete ALL data!\n\nThis includes:\n- All articles\n- All student records\n- All reading history\n\nThis action CANNOT be undone!\n\nAre you absolutely sure?')) {
+                articles = [];
+                students = [];
+                userStats = {
+                    articlesRead: 0,
+                    minutesRead: 0,
+                    dayStreak: 0,
+                    favoriteCategory: '-',
+                    readingHistory: []
+                };
+                
+                showToast('Database cleared successfully!', 'success');
+                updateAdminContent();
+                updateCategoryCounts();
+                populateHomePage();
+                updateDashboardStats();
+            }
+        }
+
+        function generateReport() {
+            try {
+                const now = new Date();
+                const categoryStats = {};
+                const monthlyStats = {};
+                
+                // Calculate statistics
+                articles.forEach(article => {
+                    // Category stats
+                    categoryStats[article.category] = (categoryStats[article.category] || 0) + 1;
+                    
+                    // Monthly stats
+                    const month = article.date.substring(0, 7); // YYYY-MM
+                    monthlyStats[month] = (monthlyStats[month] || 0) + 1;
+                });
+                
+                const report = {
+                    generatedAt: now.toISOString(),
+                    generatedBy: currentUser?.username || 'System',
+                    summary: {
+                        totalArticles: articles.length,
+                        totalStudents: students.length,
+                        activeStudents: students.filter(s => s.status === 'Active').length,
+                        inactiveStudents: students.filter(s => s.status !== 'Active').length,
+                        categoryCounts: categoryStats,
+                        monthlyArticles: monthlyStats,
+                        averageReadingTime: articles.length > 0 ? Math.round(articles.reduce((sum, a) => sum + a.time, 0) / articles.length) : 0
+                    },
+                    articles: articles.map(a => ({
+                        id: a.id,
+                        title: a.title,
+                        category: a.category,
+                        date: a.date,
+                        readingTime: a.time,
+                        summary: a.summary.substring(0, 100) + '...'
+                    })),
+                    students: students.map(s => ({
+                        id: s.id,
+                        name: s.name,
+                        usn: s.usn,
+                        email: s.email,
+                        batch: s.batch,
+                        specialization: s.specialization,
+                        status: s.status,
+                        registeredAt: s.createdAt
+                    })),
+                    metadata: {
+                        reportVersion: '2.0',
+                        systemVersion: 'MBA Pulse v1.0',
+                        dataIntegrity: 'Verified'
+                    }
+                };
+                
+                const reportStr = JSON.stringify(report, null, 2);
+                const reportBlob = new Blob([reportStr], {type: 'application/json'});
+                const url = URL.createObjectURL(reportBlob);
+                
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `mbapulse_report_${now.toISOString().split('T')[0]}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                showToast('Comprehensive report generated and downloaded!', 'success');
+            } catch (error) {
+                showToast('Error generating report: ' + error.message, 'error');
+            }
+        }
+
+        // Enhanced modal handling
+        function closeModal() {
+            document.getElementById('articleModal').classList.remove('show');
+        }
+
+        // Close modals when clicking outside
+        document.getElementById('articleModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.getElementById('forgotPasswordModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeForgotPassword();
+            }
+        });
+
+        // Handle escape key for modals
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                closeForgotPassword();
+            }
+        });
+
+        // Enhanced error handling and validation
+        function validateImageUrl(url) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => resolve(true);
+                img.onerror = () => resolve(false);
+                img.src = url;
+                
+                // Timeout after 5 seconds
+                setTimeout(() => resolve(false), 5000);
+            });
+        }
+
+        // Auto-save functionality for admin forms
+        function autoSaveForm(formId) {
+            const form = document.getElementById(formId);
+            if (!form) return;
+            
+            const inputs = form.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                input.addEventListener('input', () => {
+                    const formData = new FormData(form);
+                    const data = Object.fromEntries(formData);
+                    localStorage.setItem(`autosave_${formId}`, JSON.stringify(data));
+                });
+            });
+        }
+
+        // Load auto-saved data
+        function loadAutoSavedData(formId) {
+            const saved = localStorage.getItem(`autosave_${formId}`);
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    Object.keys(data).forEach(key => {
+                        const input = document.getElementById(key);
+                        if (input && data[key]) {
+                            input.value = data[key];
+                        }
+                    });
+                } catch (error) {
+                    console.log('Error loading auto-saved data:', error);
+                }
+            }
+        }
+
+        // Clear auto-saved data
+        function clearAutoSavedData(formId) {
+            localStorage.removeItem(`autosave_${formId}`);
+        }
+
+        // Initialize auto-save for admin forms
+        document.addEventListener('DOMContentLoaded', function() {
+            if (currentUser && currentUser.type === 'admin') {
+                autoSaveForm('addArticleForm');
+                autoSaveForm('registerStudentForm');
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9749979636ac8a2a',t:'MTc1NjEwOTIwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
